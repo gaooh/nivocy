@@ -1,0 +1,30 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@project.name, :controller => :projects, :action => :show, :id => @project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	マイルストーン管理
+<% end %>
+
+<h1 class="input">マイルストーン管理</h1>
+
+<table id="milestones">
+	<tr>
+		<th>名称</th>
+		<th>詳細</th>
+		<th width="80px">完了予定日</th>
+		<th width="20px"></th>
+	</tr>
+	<% for milestone in @milestones do %>
+	<tbody id="milestone_<%= milestone.id %>">
+	<tr>
+		<td><%= link_to milestone.name, :action => 'edit', :id => milestone.id %></td>
+		<td><%=h milestone.description %></td>
+		<td><%=h format_day(milestone.goal_at) %></td>
+		<td><%= link_to_remote(icon_image_tag('bin_closed'), :url => { :action => 'ajax_destory', :id => milestone.id }) %></td>
+	</tr>
+	</tbody>
+	<% end %>
+</table>
+<%= sortable_element 'milestones', :url => { :action => :sort }, :tag => "tbody", :complete => visual_effect(:highlight, 'milestones',:duration => 0.5) %>
+
+<%= link_to_icon_text('report_add', 'マイルストーン追加', :action => 'new', :project_id => @project.id )%>

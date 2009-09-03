@@ -1,0 +1,3 @@
+page.hide "comment_form#{@project_attachment.id}"
+page.replace_html "comment_text#{@project_attachment.id}", render(:partial => "comment_text", :locals=>{:project_attachment=>@project_attachment})
+page.show "comment_text#{@project_attachment.id}"

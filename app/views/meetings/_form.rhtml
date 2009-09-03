@@ -1,0 +1,88 @@
+<script type="text/javascript">
+	var calendar;
+	 
+	function init() {
+		initCalendar();
+		Event.observe('search_pickup_place', 'click', searchPickupPlace, false);
+	}
+
+	function initCalendar() { 
+		calendar = createJaCalendarObj("meeting_start_calendar");
+		calendar.selectEvent.subscribe(caldendarSelect, calendar, true);
+		calendar.render();  
+		YAHOO.util.Event.addListener("meeting_start_at_day", "focus", calendarFocus, calendar, true); 
+	}
+
+	function caldendarSelect(type, args, obj) {
+		var dates = args[0][0];  
+		var year = dates[0], month = dates[1], day = dates[2];
+		$('meeting_start_at_day').value = year + '/' + month + "/" + day;
+		$('meeting_end_at_day').value = year + '/' + month + "/" + day;
+		calendar.hide();
+	}
+
+	function calendarFocus(type, args, obj) {
+		calendar.show();
+	}
+	
+	function pickupPlace(index) {
+		$('meeting[place_id]').selectedIndex = $F('pickup_place_place_id_' + index);;
+		$('meeting_start_at_day').value = $F('pickup_place_start_at_day_' + index);
+		$('meeting_start_at_time').value = $F('pickup_place_start_at_time_' + index);
+		$('meeting_end_at_day').value = $F('pickup_place_end_at_day_' + index);
+		$('meeting_end_at_time').value = $F('pickup_place_end_at_time_' + index);
+		Element.hide("pickup_place_contents");
+	}
+	
+	function searchPickupPlace() {
+		var member_count = $('select_user').length;
+		var mtg_time = $F('pickup_mtg_time');
+		var target_day = $F('pickup_day');
+		<%= remote_function( :url => {:action => 'ajax_show_pickup_place'}, 
+				:with =>"'member_count=' + member_count + '&mtg_time=' + mtg_time + '&target_day=' + target_day") %>
+	}
+	
+</script>
+
+<div id="post_meeting">
+<%= error_messages_for 'task' %>
+
+<p><label for="meeting_title">タイトル</label>
+<%= text_field 'meeting', 'title', :size=>'24' %></p>
+
+<p>参加者</p>
+<%= render :partial => 'common/select_user_box', :locals => { :type => 'meeting'} %>
+
+<p><label for="meeting_facilitator_user_id">ファシリテーター</label>
+<%= select_tag "meeting[facilitator_user_id]", options_from_collection_for_select(@select_users, "id", "name", @meeting.facilitator_user_id), "class"=>"w200"%><br></p>
+
+<p><label for="meeting_clerk_user_id">書記</label>
+<%= select_tag "meeting[clerk_user_id]", options_from_collection_for_select(@select_users, "id", "name", @meeting.clerk_user_id), "class"=>"w200"%><br></p>
+
+<hr>
+
+<p><label for="meeting_pickup"></label>
+<%= text_field 'pickup', 'day' , :size=>'10', :value=>Time.now.strftime("%Y/%m/%d")%>に
+<%= text_field 'pickup', 'mtg_time' , :size=>'3', :value => 60 %>分で
+<a id="search_pickup_place">MTG場所候補を取得する</a>
+<span id="target_pickup_places"></span>
+</p>
+
+
+<p><label for="meeting_place_id">場所</label>
+<%= select_tag "meeting[place_id]", options_from_collection_for_select(@places, "id", "name", @meeting.place_id), "class"=>"w200"%><br></p>
+
+<p><label for="meeting_holding_at">開催日</label>
+<%= text_field 'meeting_start_at', 'day' , :size=>'10', :value=>@default_start_at.strftime("%Y/%m/%d")%>
+<%= select_hour_minute @default_start_at, :prefix => 'meeting_start_at', :field_name=>'time' %> 〜 
+<%= text_field 'meeting_end_at', 'day' , :size=>'10', :value=>@default_end_at.strftime("%Y/%m/%d")%>
+<%= select_hour_minute @default_end_at, :prefix => 'meeting_end_at', :field_name=>'time' %>
+<div id="meeting_start_calendar"></div>
+</p>
+
+<%= hidden_field 'meeting', 'project_id' %>
+
+</div>
+<script type="text/javascript">
+onloadFunctions.appendFunction(new OnloadFunction(init));
+</script>

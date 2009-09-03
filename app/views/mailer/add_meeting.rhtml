@@ -1,0 +1,21 @@
+
+<%= @meeting.project.name %> - <%= @meeting.title %> へ参加依頼がありました
+
+‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥
+
+■参加者
+<%- @meeting.model_user_meeting_entry_users.each do | user | -%> 
+<%= user.office_id %>,
+<%- end -%>
+
+■開催日
+<%= @meeting.start_at.strftime "%Y/%m/%d %H:%M" %> 〜　<%= @meeting.end_at.strftime "%Y/%m/%d %H:%M" %>
+
+■場所
+<%= @meeting.place.name %>
+
+【URL】
+<%= APP_CONFIG[:url] %>meetings/show/<%= @meeting.id %>
+
+--
+N<%= APP_CONFIG[:service_name] %>(c)gaooh

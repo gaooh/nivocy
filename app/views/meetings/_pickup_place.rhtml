@@ -1,0 +1,14 @@
+<div id="pickup_place_contents">
+<ul>
+<% @appointments.each_with_index do | appointment, index | %>
+	<li onClick="pickupPlace(<%= index %>)">
+		<%= appointment.start_at.strftime("%H:%M") %>〜<%= appointment.end_at.strftime("%H:%M") %> | <%= appointment.place.name %>
+	</li>
+	<%= hidden_field 'pickup_place_place_id', index, :value=> appointment.place_id %>
+	<%= hidden_field 'pickup_place_start_at_day', index, :value=> appointment.start_at.strftime("%Y/%m/%d") %>
+	<%= hidden_field 'pickup_place_start_at_time', index, :value=> appointment.start_at.strftime("%H:%M") %>
+	<%= hidden_field 'pickup_place_end_at_day', index, :value=> appointment.end_at.strftime("%Y/%m/%d") %>
+	<%= hidden_field 'pickup_place_end_at_time', index, :value=> appointment.end_at.strftime("%H:%M") %>
+<% end %>
+</ul>
+</div>

@@ -1,0 +1,62 @@
+
+<script language="JavaScript">
+	
+	var calendar;
+	
+	window.onload = function() {
+		initCalendar();
+	}
+	
+	function initCalendar() { 
+		calendar　= createJaCalendarObj("appointment_calendar");
+		calendar.selectEvent.subscribe(caldendarSelect, calendar, true);
+		calendar.render();
+	}
+	
+	function caldendarSelect(type, args, obj) {
+		var dates = args[0][0];  
+		var year = dates[0], month = dates[1], day = dates[2];
+		location.href = "<%= APP_CONFIG[:url] %>appointments/show/" + year + '-' + month + '-' + day;
+	}
+</script>
+
+<h1 class="input">会議室予約状況</h1>
+
+<div id="appointment_calendar"></div>
+<div class="clear" />
+<div id="appointments_contents">
+	
+<table>
+	<tr>
+		<th>会議室</th>
+		<% @hour_dates.each do | hour | %>
+		<th colspan="2"><%= hour %></th>
+		<% end %>
+	</tr>
+	<% @places.each do | place | %>
+	<tr>
+		<td rowspan="3"><%= place.name %></td>
+		<% @hour_dates.each do | hour | %>
+			<% 0.step(59, 30) do | min | %>
+				<td ></td>
+			<% end %>
+		<% end %>
+	</tr>
+	<tr>
+		<% @hour_dates.each do | hour | %>
+			<% 0.step(59, 30) do | min | %>
+				<td <% if @appointments_at_place[place.id]["#{hour}:#{min}"] %>style="height: 20px; background: white;"<% end %>></td>
+			<% end %>
+		<% end %>
+	</tr>
+	<tr>
+		<% @hour_dates.each do | hour | %>
+			<% 0.step(59, 30) do | min | %>
+				<td></td>
+			<% end %>
+		<% end %>
+	</tr>
+	<% end %>
+</table>
+
+</div>

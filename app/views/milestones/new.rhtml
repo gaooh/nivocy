@@ -1,0 +1,19 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@project.name, :controller => :projects, :action => :show, :id => @project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%= link_to 'マイルストーン管理', :action => :list, :project_id => @project.id %>
+<% end %>
+<% content_for(:breadcrumb_id) do %>
+	新規作成
+<% end %>
+
+<h1 class="input">マイルストーン編集</h1>
+
+<% form_tag :action => 'create', :id => @milestone do %>
+  	<div class="input_contents">
+  		<%= render :partial => 'form' %>
+  	</div>
+	<%= hidden_field 'milestone', 'project_id' %>
+	<%= button_image_submit_tag 'create' %>
+<% end %>

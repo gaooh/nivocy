@@ -1,0 +1,9 @@
+■タイトル<br>
+<%= @task.title %>
+<br>
+■内容<br>
+<%= @task.content %><br>
+<br>
+<%= link_to_mobile 1, "詳細を見る", {:action => :show_detail, :id => @task.id} %><br>
+<%= link_to_mobile 2, "タスクログを見る", {:action => :show_task_log, :id => @task.id} %><br>
+<%= link_to_mobile 3, "リストへ戻る", {:action => :list} %><br>

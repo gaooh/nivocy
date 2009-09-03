@@ -1,0 +1,4 @@
+page.replace_html 'target_schedule_content', render(:partial => 'form')
+page.replace_html 'view_setup_day', @schedule.start_at.strftime("%Y/%m/%d")
+page.replace_html 'view_setup_start_at', @schedule.start_at.strftime("%H:%M")
+page.replace_html 'view_setup_end_at', @schedule.end_at.strftime("%H:%M")

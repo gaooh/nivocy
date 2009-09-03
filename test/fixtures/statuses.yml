@@ -1,0 +1,34 @@
+# == Schema Information
+# Schema version: 49
+#
+# Table name: statuses
+#
+#  id         :integer(11)     not null, primary key
+#  name       :string(200)     default(""), not null
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  deleted_at :datetime        
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+record_1:
+  id: 1
+  name: バグ
+record_2:
+  id: 2
+  name: タスク
+record_3:
+  id: 3
+  name: 要望
+record_4:
+  id: 4
+  name: 対応中
+record_5:
+  id: 5
+  name: 確認待ち
+record_6:
+  id: 6
+  name: サスペンド
+record_7:
+  id: 7
+  name: 完了 

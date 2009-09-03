@@ -1,0 +1,123 @@
+<% content_for(:breadcrumb_controller) do %>
+	スケジュール管理
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	日表示
+<% end %>
+<% content_for(:breadcrumb_id) do %>
+	<%= @base_date.strftime("%Y/%m/%d") %>
+<% end %>
+
+<script type="text/javascript">
+	var scheduler = new Scheduler();
+	var autoUpdateUrl = "<%= url_for :controller => 'user', :action => 'auto_update_schedule' %>";
+	var ddUpdateUrl = "<%= url_for :controller => 'user', :action => 'drag_drop_update_schedule' %>";
+	var type = 'day';
+	
+	function changeDivision(selectIndex) {
+		division_id = selectIndex + 1;
+		location.href = "/schedules/day?division_id=" + division_id;
+	}
+</script>
+
+<div class="schedule_menu_left">	
+	<%= link_to icon_image_tag('control_rewind_blue'), :action => 'move_day', :base_date => @base_date, :week_value => -7 %>
+	<%= link_to icon_image_tag('control_back_blue'), :action => 'move_day', :base_date => @base_date, :week_value => -1 %>
+	<%= link_to icon_image_tag('control_stop_blue'), :action => 'move_day', :base_date => Date.today, :week_value => 0 %>
+	<%= link_to icon_image_tag('control_play_blue'), :action => 'move_day', :base_date => @base_date, :week_value => 1 %>
+	<%= link_to icon_image_tag('control_fastforward_blue'), :action => 'move_day', :base_date => @base_date, :week_value => 7 %>
+</div>
+
+<div class="schedule_menu_right">
+	<%= render :partial => 'schedule_menu_right' %>
+</div>
+<div class="clear"></div>
+
+<div id="target_schedule" style="display: none;">
+<%= render :partial => 'form' %>
+</div>
+<br><br>
+<%= select_tag "divisions", options_from_collection_for_select(@divisions, "id", "name"), 
+	"onChange"=> "javascript:changeDivision(this.selectedIndex)",
+	"class"=>"w200" %>
+
+<% @schedules_all.each_with_index do |schedules, count| %>
+<div class="oneDaySchedule">
+
+<table id="main_table" >
+<tr class="schedule_day_user<%= "_even" if count.even? %>">
+	<td></td>
+	<td>
+	<table style="width:720px">
+	<tr>
+	<% for i in 0..23 %>
+    <td class="day_time"><%= i %></td>
+	<td class="day_time"></td>
+    <% end %>
+	</tr>
+	</table>
+	</td>
+</tr>
+<tr class="schedule_day_user<%= "_even" if count.even? %>">
+	<td width="200px"><%= @target_users[count].name %></td>
+<td>
+    <div id="time<%= count+1 %>" onmousedown="scheduler.startTimeFieldDay(<%= count+1 %>);"
+     onmousemove="scheduler.overTimeFieldDay();"
+     ondblclick="addScheduleDay(1);"
+     onmouseup="scheduler.endTimeFieldDay();" class="time_field_day" >
+      <table class="dayInnerTable">
+      <tr>
+        <% for j in 0..47 %>
+        <td class="day_table_td">
+        <div id="cell<%= count+1 %>_<%= j %>" height="100%" class="day_cell"></div>
+        </td>
+        <% end %>
+        <div id="target<%= count+1 %>" class="targetDay"></div>
+      </tr>
+      </table>
+    </div>
+</td>
+</tr>
+</table>
+<div style="background-color:#fff;">
+<% for schedule in schedules %>
+<div id="schedule<%= schedule.id %>_<%= count+1 %>" class="schedule" style="width:<%= width(schedule) %>px; vertical-align:bottom;"
+    onmousemove="scheduler.resizeDay();"
+    ondblclick="scheduler.editSchedule(<%= schedule.id %>);"
+    onmouseup="scheduler.endTimeFieldDay();">
+    <table class="collapseTable" style="height:<%= schedule.width %>px">
+    <tr>
+    <td style="vertical-align:top;width:<%= width(schedule) - 11 %>px;">
+        <%= schedule.title %>
+    </td>
+    <td id="scheduleBottom<%= schedule.id %>_<%= count+1 %>" class="scheduleRight" onmousedown="scheduler.startResize('<%= schedule.id %>_<%= count +1%>', <%= top_index(schedule) %>);">
+    </td>
+    </tr>
+    </table>
+</div>
+<script type="text/javascript">
+	var element = $("schedule<%= schedule.id %>_<%= count+1 %>");
+	var style = element.style;
+	style.left = (scheduler.getRegionLeft("cell1_<%= top_index(schedule) %>") - 1 + 8) + "px";
+	style.top = (scheduler.getRegionTop("time<%= count+1 %>") + <%= schedule.left_margin %> + 10) + "px";
+	style.height = <%= schedule.width %> + "px";
+
+	var dd<%= schedule.id %> = new DDDay("schedule<%= schedule.id %>_<%= count+1 %>");
+	dd<%= schedule.id %>.addInvalidHandleId("scheduleBottom<%= schedule.id %>_<%= count+1 %>");
+	dd<%= schedule.id %>.setYConstraint(0, 0);
+	dd<%= schedule.id %>.setXConstraint(
+	    scheduler.getRegionLeft(element) - scheduler.getRegionLeft("time<%= count+1 %>"),
+	    scheduler.getRegionRight("time<%= count+1 %>") - scheduler.getRegionRight(element), 15);
+</script>
+<% end %>
+</div>
+</div>
+<% end %>
+
+<script type="text/javascript">
+jQuery(document).ready(function()
+{
+  jQuery("div.schedule").corner("5px");
+});
+</script>
+<div id="addSchedule"></div>

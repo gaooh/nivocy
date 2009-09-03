@@ -1,0 +1,14 @@
+<div id="account_form">	
+	<p><label for="user_office_id">オフィス　ID</label>
+		<%= text_field 'user', 'office_id' %></p>
+	<p><label for="user_password">パスワード</label>
+		<%= password_field 'user', 'password' %></p>
+	<p><label for="user_name">名前</label>
+		<%= text_field 'user', 'name' %></p>
+	<p><label for="user_division">所属部署</label>
+		<div id="division_tree"><%= division_trees(@user, @divisions) %></div></p>
+	<p><label for="user_email">email</label>
+		<%= text_field 'user', 'email', :value=>@user.email %></p>
+	<p><label for="user_im">IM</label>
+		<%= text_field 'user', 'im' %></p>
+</div>

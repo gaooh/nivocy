@@ -1,0 +1,78 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@project_attachment.project.name, :controller => :projects, :action => :show, :id => @project_attachment.project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	ファイル管理
+<% end %>
+
+<h1 class="input">プロジェクト関連ファイルをアップロードする</h1>
+
+<div class="input_contents">
+	<%= form_tag_with_upload_progress({:action => 'upload'}, {
+     	:begin => "new Effect.Appear('status')",
+     	:finish => "$('message').innerHTML = arguments[0]" }) %>  
+     
+  		<%= file_field 'document', 'file' %>
+		<%= hidden_field 'project_attachment', 'project_id' %>    
+  		<%= submit_tag 'Upload' %>
+  
+  		<div id="status" style="display: none">
+    		<%= upload_status_tag %>
+  		</div>
+  
+  	<%= end_form_tag %>
+</div>
+
+<div id="message"><%= @message %></div>
+
+<script language="JavaScript">
+
+	function editComment(id) {
+		var comment_text = $('comment_text' + id)
+		if (Element.visible(comment_text)) {
+			Element.hide(comment_text);
+		} else {
+			Element.show(comment_text);
+		}
+		var comment_form = $('comment_form' + id)
+		if (Element.visible(comment_form)) {
+			Element.hide(comment_form);
+		} else {
+			Element.show(comment_form);
+		}
+	}
+	
+</script>
+
+<h1 class="input">アップロード済みファイル一覧</h1>
+
+<table>
+	<tr>
+		<th width="120px"></th>
+		<th>ファイル名</th>
+		<th>更新日</th>
+		<th>size</th>
+	</tr>
+	<% @project_attachments.each_with_index do | project_attachment, index |%>
+	<tr <% if index % 2 == 0 %>class="project_attachemets_file_list_even"<% end %> height="20px">
+		<td rowspan="2"><img src="/project_attachments/thumbnail/<%= project_attachment.id %>" /></td>
+		<td><%= link_to project_attachment.org_filename, :action => 'view_file', :id => project_attachment.id %></td>
+		<td><%= project_attachment.updated_at.strftime("%Y/%m/%d") %></td>
+		<td><%= byte_column(project_attachment.size) %></td>
+	</tr>
+	<tr <% if index % 2 == 0 %>class="project_attachemets_file_list_even"<% end %>>
+		<td colspan="3" valign="top">
+			<div id="comment_text<%= project_attachment.id %>">
+				<%= render :partial => "comment_text", :locals => { :project_attachment => project_attachment } %>
+			</div>
+			<div id="comment_form<%= project_attachment.id %>" style="display: none;">
+			<% form_remote_tag :url => { :action => 'ajax_update_comment' }  do %>
+				<%= hidden_field 'project_attachment', 'id', :value => project_attachment.id  %>
+				<%= text_area 'project_attachment', 'comment', "cols" => 80, "rows" => 3, :value => project_attachment.comment %><br/>
+				<%= submit_tag '更新' %>
+			<% end %>
+			</div>
+		</td>
+	</tr>
+	<% end %>
+</table>

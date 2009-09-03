@@ -1,0 +1,4 @@
+<div id="guest_<%= @key %>">
+<%= @email %>&nbsp;<%= link_to_remote "削除", :url => {:action => 'ajax_delete_guest', :id=>@key} %><br/>
+<%= hidden_field 'add_guest', @key, :value=> @email %>
+</div>

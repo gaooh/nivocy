@@ -1,0 +1,49 @@
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+<%= @meeting.project.name %> - <%= @meeting.title %> 議事録
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+■参加者
+<%- @meeting.model_user_meeting_entry_users.each do | user | -%> 
+<%= user.office_id %>,
+<%- end -%>
+
+■開催日
+<%= @meeting.start_at.strftime "%Y/%m/%d %H:%M" %> 〜　<%= @meeting.end_at.strftime "%Y/%m/%d %H:%M" %>
+
+■場所
+<%= @meeting.place.name %>
+
+【URL】
+<%= APP_CONFIG[:url] %>meetings/show/<%= @meeting.id %>
+
+□□‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥
+□◆結論
+□□‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥
+
+<%- @meeting.meeting_agendas.each do | agenda| -%>
+▼<%= agenda.title %>
+ <%- @meeting.meeting_logs.each do | meeting_log | -%>
+  <%- if agenda.id == meeting_log.meeting_agenda_id && meeting_log.conclusion? -%>
+ <%= meeting_log.voice %>(<%= meeting_log.user.office_id %>)
+  <%- end -%>
+ <%- end -%>
+
+<%- end -%>
+
+□□‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥
+□◆TODO
+□□‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥‥
+
+<%- @meeting.meeting_agendas.each do | agenda| -%>
+▼<%= agenda.title %>
+ <%- @meeting.meeting_logs.each do | meeting_log | -%>
+  <%- if agenda.id == meeting_log.meeting_agenda_id && meeting_log.todo? -%>
+ <%= meeting_log.voice %>(<%= meeting_log.user.office_id %>)
+  <%- end -%>
+ <%- end -%>
+
+<%- end -%>
+
+--
+<%= APP_CONFIG[:service_name] %> (c)gaooh

@@ -1,0 +1,15 @@
+
+<div id="idea_form" style="display :none">
+<% form_remote_tag :url => { :controller => 'ideas', :action => 'ajax_add_comment' } do %>
+
+<%= hidden_field 'idea_comment', 'idea_id', :value=>@idea.id %>
+
+<p><label for="comment_idea_comment_type">立場</label>
+<%= select_tag "idea_comment[idea_comment_type_id]", options_from_collection_for_select(@idea_comment_types, "id", "name"), "class"=>"w200"%><br></p>
+
+<p><label for="comment_comment">コメント</label>
+<%= text_area 'idea_comment', 'comment', "cols" => 80, "rows" => 10  %></p>
+<%= button_image_submit_tag "create" %>
+
+<% end %>
+</div>

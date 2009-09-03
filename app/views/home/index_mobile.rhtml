@@ -1,0 +1,26 @@
+&#xE683;タスク(5件)<br>
+<% for task in @tasks %>
+・<%= link_to task.title, :controller=>'tasks', :action=>'show', :id=>task.id %><br/>
+<% end %>
+<div align="center"><%= link_to "全てを見る", :controller=> 'tasks', :action=>'list' %></div>
+<br/>
+
+&#xE689;参加予定のミーティング<br/>
+<% if @meetings.empty? %>
+	ミーティングがありません。わーい！<br/>
+<% else %>
+<% for meeting in @meetings %>
+・<%= link_to meeting.title, :controller=> :meetings, :action=>:show, :id=>meeting.id %><br/>
+<% end %>
+<% end %>
+<br/>
+
+&#xE688;今日のスケジュール<br/>
+<% if @schedules.empty? %>
+	今日の予定はありません。わーい！<br/>
+<% else %>
+<% for schedule in @schedules %>
+・<%=h schedule.title %><br/>
+<% end %>
+<div align="center"><%= link_to "全てを見る", :controller=> 'tasks', :action=>'list' %></div>
+<% end %>

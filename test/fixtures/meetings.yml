@@ -1,0 +1,22 @@
+# == Schema Information
+# Schema version: 49
+#
+# Table name: meetings
+#
+#  id                  :integer(11)     not null, primary key
+#  project_id          :integer(11)     not null
+#  create_user_id      :integer(11)     not null
+#  facilitator_user_id :integer(11)     
+#  clerk_user_id       :integer(11)     
+#  title               :string(2000)    default(""), not null
+#  start_at            :datetime        
+#  created_at          :datetime        
+#  place_id            :integer(11)     not null
+#  end_at              :datetime        not null
+#  updated_at          :datetime        not null
+#  deleted_at          :datetime        
+#  open_flag           :boolean(1)      not null
+#  room_schedule_id    :integer(11)     not null
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html

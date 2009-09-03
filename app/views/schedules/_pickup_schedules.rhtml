@@ -1,0 +1,9 @@
+<div id="pickup_place_contents">
+<ul>
+<% @schedules.each_with_index do | schedule, index | %>
+	<li onClick="pickupPlace(<%= index %>)">
+		<%= schedule.start_at.strftime("%H:%M") %>〜<%= schedule.end_at.strftime("%H:%M") %>
+	</li>
+<% end %>
+</ul>
+</div>

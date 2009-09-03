@@ -1,0 +1,138 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= @project.name %>
+<% end %>
+
+<script type="text/javascript">
+	 
+	function destory_confirm() {
+		if (Element.visible("destory_confirm")) {
+			Element.hide("destory_confirm")
+		} else {
+			new Effect.Appear("destory_confirm", { from:0.1, to:1.0, duration: 1.0 });
+		}
+	}
+	
+</script>
+
+<div id="main">
+	<div class="right_side">
+		<div class="pad">
+			
+			<h3>ミーティング一覧:</h3>
+				<ul>
+				<% for meeting in @meetings %>
+				<li><%= link_to meeting.title, :controller=>'meetings', :action=>'show', :id=>meeting.id%></li>
+				<% end %>
+				</ul>
+			<%= link_to 'ミーティング作成', :controller=>'meetings', :action => 'new', :project_id => @project.id %>				
+		</div>
+		
+		<div class="pad">
+			
+			<h3>状態:</h3>
+				<div class="graph">
+				    <span class="bar" style="width: <%= @complate_rate %>%;"><%= @complate_rate %>%</span>
+				</div>
+				<%= @task_count_complate %>/<%= @task_count_all %>		
+		</div>
+		
+		<div class="pad">
+			
+			<h3>参加メンバー:</h3>
+				<ul>
+				<% for member in @project.project_entry_users %>
+				<li><%= member.user.name %></li>
+				<% end %>
+				</ul>
+			<h3>参加ゲストメンバー:</h3>
+				<ul>
+				<% for guest in @project.project_entry_guest_users %>
+				<li><%= guest.invite_user.email %></li>
+				<% end %>
+				</ul>
+					
+		</div>
+		
+		<div class="pad">
+			
+			<h3>関連ファイル:</h3>
+				<ul>
+				<% for project_attachment in @project.project_attachments %>
+				<li><%= project_attachment.org_filename %></li>
+				<% end %>
+				</ul>
+			<%= link_to 'ファイルをアップロード', :controller=> :project_attachments, :action => 'list', :project_id => @project.id %>		
+		</div>
+	</div>
+	
+	<div class="task_content_navi">
+		<span style="float: left;">
+		<%= link_to_icon_text('report_edit', '編集', :action => 'edit', :id => @project)%>&nbsp;&nbsp;|
+		<% if delete_project? %>
+			<%= link_to_function_icon_text('bin_closed', '削除', 'destory_confirm()')%>&nbsp;&nbsp;|
+		<% end %>
+		<%= link_to_icon_text('page_add', 'タスクを追加', :controller => :tasks, :action => 'new', :project_id => @project.id )%>
+		</span>
+		<span style="float: right;">
+			<%= link_to_icon_text('cog', 'マイルストーン設定', :controller => :milestones, :action => 'list', :project_id => @project.id )%>
+		</span>
+	</div>
+	<br>
+	<div id="left_side">
+		
+		<div id="destory_confirm" class="info" style="display: none;">
+			<% form_tag :action => 'destroy' do %>
+				<%= hidden_field 'project', 'id' %>
+				削除するとタスク、ミーティング、すべて閲覧できなくなります。<br/>
+				<%= @project.name%>を削除していいですか？　
+				<%= submit_tag 'はい' %>&nbsp;
+				<%= button_to_function "いいえ", "destory_confirm()" %>
+			<% end %>
+		</div>
+		<div class="task_contents">
+			<div class="task_date">
+				<span>&nbsp;|&nbsp;作成者 : <%=h @project.user.office_id %></span>&nbsp;|&nbsp;
+				<span>開始日 : <%=h @project.start_at.strftime("%Y/%m/%d") %></span>&nbsp;|&nbsp;
+				<span class="endday">完了予定日 : <%=h @project.goal_at.strftime("%Y/%m/%d") %></span>
+			</div>
+
+			<div class="task_title">
+				<%=h @project.name %>
+			</div>
+
+			<div class="task_content">
+				<%=h @project.summary %>
+			</div>
+
+	  </div>
+	
+	  <div class="mpart">
+		<h2>このプロジェクトのタスク一覧</h2>
+		<% @statuses.each do |status| %>
+			<%= link_to status.name, :action => 'show', :status => status.id %> 
+			<% if status.id != @statuses.size %>|<% end %>
+		<% end%>
+		<% if @tasks.empty? %>
+			タスクがありません。わーい！
+		<% else %>
+		
+		<table>
+			<tr>
+				<th width="80px">状態</th>
+				<th>タイトル</th>
+				<th width="200px">締め切り</th>
+			</tr>
+			<% for task in @tasks %>
+			<tr>
+				<td><%=h task.status.name %></td>
+				<td><%= link_to task.title, :controller=>'tasks', :action=>'show', :id=>task.id %></td>
+				<td><%=h task.goal_at.strftime("%Y/%m/%d %H時") %></td>
+			</tr>
+			<% end %>
+		</table>
+		<%= link_to "Prev", { :page => @task_pages.current.previous } if @task_pages.current.previous %>
+		<%= paginate_number @task_pages.last, @task_pages.current.number %>
+		<%= link_to "Next", { :page => @task_pages.current.next } if @task_pages.current.next %>
+		<% end %>
+	</div>
+</div>

@@ -1,0 +1,54 @@
+<script type="text/javascript">
+	<% if type == 'meeting' %>
+		var entryManager = new EntryManager('entry_user', 'select_user', 
+											['meeting[facilitator_user_id]', 'meeting[clerk_user_id]'], 'user_list');
+	<% else %>
+		var entryManager = new EntryManager('entry_user', 'select_user', [], 'user_list');
+	<% end %>
+	
+	function init_select_user_box() {
+		var addpoint = $('user_list');
+		<% for select_user in @select_users %>
+			var addElement = document.createElement('input');
+			addElement.id = "selectUser" + <%= select_user.id %>;
+			addElement.name = "selectUser[]"; 
+			addElement.type = "hidden";
+			addElement.value = <%= select_user.id %>;  
+			addpoint.appendChild(addElement);
+		<% end %>
+		
+		Event.observe('add_member', 'click', addMember, false);
+		Event.observe('delete_member', 'click', deleteMember, false);
+	}
+
+	function addMember() {
+		entryManager.addMember();
+	}
+	
+	function deleteMember() {
+		entryManager.deleteMember();
+	}
+	
+</script>
+
+<%= select_tag "divisions", options_from_collection_for_select(@divisions, "id", "name"), "class"=>"w200", 
+	"onChange"=> remote_function(:url => {:controller=>:common, :action=>'ajax_update_users'}, 
+	:with => "'division_id=' + this.value + '&form_id=entry_user'") %><br>
+	
+<div class="user_list">
+<%= select_tag 'entry_user', options_from_collection_for_select(@users, "id", "name"), "class"=>"w200", :size=>8 %>
+</div>
+<div class="user_select_button">
+<a id="add_member" ><%= icon_image_tag 'control_fastforward_blue' %></a><br/><br/>
+<a id="delete_member" ><%= icon_image_tag 'control_rewind_blue' %></a>
+</div>
+<div class="user_selected_list">
+<%= select_tag "select_user", options_from_collection_for_select(@select_users, "id", "name"), "class"=>"w200", :size=>8 %>
+</div>
+<div class="clear" ></div>
+
+<div id="user_list"></div>
+
+<script type="text/javascript">
+onloadFunctions.appendFunction(new OnloadFunction(init_select_user_box));
+</script>

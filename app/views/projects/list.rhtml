@@ -1,0 +1,30 @@
+
+<div id="no_side">
+	
+<%= icon_image_tag 'report_add' %>
+<%= link_to '新しくプロジェクトを作成する', :action => 'new' %>
+	
+<h1 class="input">プロジェクト一覧</h1>
+
+<table>
+  <tr>
+    <th>タイトル</th>
+	<th>概要</th>
+	<th>開始日</th>
+	<th>完了予定日</th>
+  </tr>
+  
+<% for project in @projects %>
+  <tr>
+	<td><%= link_to project.name, :action => 'show', :id => project %></td>
+	<td><%=h project.summary %></td>
+	<td><%=h project.start_at.strftime("%Y年%m月%d日") %></td>
+	<td><%=h project.goal_at.strftime("%Y年%m月%d日") %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @project_pages.current.previous } if @project_pages.current.previous %>
+<%= link_to 'Next page', { :page => @project_pages.current.next } if @project_pages.current.next %> 
+
+</div>

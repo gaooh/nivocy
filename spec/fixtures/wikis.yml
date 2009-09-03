@@ -1,0 +1,8 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+record_1:
+  id: 1
+  project_id: 1
+  create_user_id: 1
+  title: test
+  body: testtest
+  

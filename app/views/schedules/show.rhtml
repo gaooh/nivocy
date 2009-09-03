@@ -1,0 +1,53 @@
+<% content_for(:breadcrumb_controller) do %>
+	スケジュール管理
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%=h @schedule.title %>
+<% end %>
+
+<div class="schedule_menu_right">
+	<%= render :partial => 'schedule_menu_right' %>
+</div>
+
+<div class="clear" />
+<br/>
+<div id="left_side">
+<div class="task_content_navi">
+	<span style="float: left;">
+		<%= link_to_icon_text('page_edit', '編集', :action => 'edit', :id => @schedule.id )%>&nbsp;&nbsp;|&nbsp;&nbsp;
+	</span>
+	<span style="float: left;">
+		<%= link_to_icon_text('page_delete', '削除', :action => 'destroy', :id => @schedule.id )%>
+	</span>
+</div>
+</div>
+<div class="clear" />
+<div class="schedule_contents">
+	
+	<div class="schedule_date">
+		<span>&nbsp;|&nbsp;開始日 : <%=h @schedule.start_at.strftime("%Y/%m/%d %H:%M") %></span>&nbsp;|&nbsp;
+		<span class="endday">終了日 : <%=h @schedule.end_at.strftime("%Y/%m/%d %H:%M") %></span>
+	</div>
+
+	<div class="schedule_title">
+		<%=h @schedule.title %>
+	</div>
+	
+	<div class="attribute">
+	
+	<table>
+		<tr>
+			<td width="100px"><strong>登録者:</strong></td><td><%= @schedule.user.name %></td>
+			<td width="120px"><strong>登録日:</strong></td><td><%= @schedule.created_at.strftime("%Y/%m/%d %H:%M") %></td>
+		</tr>
+	</table>
+		
+	</div>
+	
+	<div class="schedule_content">
+		<%= @schedule.description %>
+	</div>
+
+</div>
+
+<br />

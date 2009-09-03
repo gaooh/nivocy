@@ -1,0 +1,20 @@
+
+<%= @task.project.name %> で以下のタスクがあなたに追加されました。
+
+タイトル:
+<%= @task.title %>
+
+マイルストーン:
+<%= @task.milestone.name %>
+
+種別:
+<%= @task.status.name %>
+
+期限:
+<%= @task.goal_at.strftime "%Y/%m/%d %H:%M" %>
+
+【URL】
+<%= APP_CONFIG[:url] %>tasks/show/<%= @task.id %>
+
+--
+<%= APP_CONFIG[:service_name] %> (c)2007, gaooh

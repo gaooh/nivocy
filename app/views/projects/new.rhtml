@@ -1,0 +1,13 @@
+<div id="no_side">
+	
+<h1 class="input">プロジェクトを新規作成</h1>
+
+<% form_tag :action => 'create' do %>
+	<div class="input_contents">
+		<%= render :partial => 'form' %>
+  	</div>
+	<%= button_image_submit_tag 'create' %>
+	
+<% end %>
+
+</div>

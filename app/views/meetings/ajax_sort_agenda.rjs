@@ -1,0 +1,1 @@
+page.replace_html 'target_meeting_log_list', render(:partial => 'meeting_log')

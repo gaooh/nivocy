@@ -1,0 +1,64 @@
+<script language="JavaScript">
+	
+	var calendar;
+	
+	window.onload = function() {
+		initCalendar();
+	}
+	
+	function initCalendar() { 
+		calendar　= createJaCalendarObj("goal_calendar");
+		calendar.selectEvent.subscribe(caldendarSelect, calendar, true);
+		calendar.render();  
+		YAHOO.util.Event.addListener("task_goal_day", "focus", calendarFocus, calendar, true); 
+	}
+	
+	function caldendarSelect(type, args, obj) {
+		var dates = args[0][0];  
+		var year = dates[0], month = dates[1], day = dates[2];
+		$('task_goal_day').value = year + '/' + month + "/" + day;
+		calendar.hide();
+	}
+	
+	function calendarFocus(type, args, obj) {
+		calendar.show();
+	}
+</script>
+
+<%= error_messages_for 'task' %>
+
+<!--[form:task]-->
+<div id="post_task">
+	
+<p><label for="task_title">プロジェクト</label>
+<% if @projects.nil? %>
+<%= @project.name %>
+<%= hidden_field 'task', 'project_id', :value => @project.id %>
+<% else %>
+<%= select_tag "task[project_id]", options_from_collection_for_select(@projects, "id", "name"), "class"=>"w200" %>
+<% end %><br></p>
+
+<p><label for="task_milestone_id">マイルストーン</label>
+<%= select_tag "task[milestone_id]", options_from_collection_for_select(@milestones, "id", "name"), "class"=>"w200" %><br></p>
+
+<p><label for="task_treat_user_id">担当者</label>
+<%= select_tag "task[treat_user_id]", options_from_collection_for_select(@users, "id", "name"), "class"=>"w200" %><br></p>
+
+<p><label for="task_title">タイトル</label>
+<%= text_field 'task', 'title'  %></p>
+
+<p><label for="task_content">内容</label>
+<%= text_area 'task', 'content', "cols" => 80, "rows" => 10 %></p>
+
+<p><label for="task_status_id">状態</label>
+<%= select_tag "task[status_id]", options_from_collection_for_select(@statuses, "id", "name")%><br></p>
+
+<p><label for="task_goal_at">完了予定日</label>
+<%= text_field 'task_goal', 'day' , :size=>'10', :value=>@default_day.strftime("%Y/%m/%d")%>
+<%= select_hour_minute @default_day, :prefix => 'task_goal', :field_name=>'time' %></p>
+<div id="goal_calendar"></div>
+
+</div>
+
+<!--[eoform:task]-->
+

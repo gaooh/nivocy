@@ -1,0 +1,119 @@
+
+	<div id="main">
+		<div class="right_side">
+			<div class="pad">
+				
+				<h3>参加プロジェクト一覧:</h3>
+					<ul>
+					<% for project in @projects %>
+					<li><%= link_to project.name, :controller=>'projects', :action=>'show', :id=>project.id%></li>
+					<% end %>
+					</ul>
+					
+					<a href="/rss/" title="RSS Feed"><img src="/images/rss.jpg" alt="RSS Feed" /></a>
+				
+			</div>
+		</div>
+		
+		<div id="left_side">
+			
+			<div class="mpart">
+				<h2>自分が投稿したアイデア</h2>
+				<% if @ideas.empty? %>
+					まだ投稿してません。
+				
+				<% else %>
+				
+				<table>
+					<tr>
+						<th width="40px">カテゴリ</th>
+						<th width="200px">タイトル</th>
+						<th width="30px">スコア</th>
+						<th width="80px">作成日</th>
+					</tr>
+					<% for idea in @ideas %>
+					<tr>
+						<td><%=h idea.idea_category.name %></td>
+						<td><%= link_to truncate(idea.title, 30), :controller => :ideas, :action => :show, :id => idea %></td>
+						<td><%= idea.score %></td>
+						<td><%=h idea.created_at.strftime('%Y/%m/%d %H時') %></td>
+					</tr>
+					<% end %>
+				</table>
+				<% end %>
+				
+				<h2>タスク一覧</h2>
+				<% if @tasks.empty? %>
+					タスクがありません。わーい！
+				
+				<% else %>
+				
+				<table>
+					<tr>
+						<th width="80px">状態</th>
+						<th>タイトル</th>
+						<th width="200px">締め切り</th>
+					</tr>
+					<% for task in @tasks %>
+					<tr>
+						<td><%=h task.status.name %></td>
+						<td><%= link_to task.title, :controller=>'tasks', :action=>'show', :id=>task.id %></td>
+						<td><%=h task.goal_at.strftime("%Y/%m/%d %H時") %></td>
+					</tr>
+					<% end %>
+				</table>
+				
+				<% if @task_count > 5 %><%= link_to "さらに見る", :controller=>:tasks %><% end %>
+				
+				<% end %>
+				
+				<br/><br/>
+				<h2>参加予定のミーティング一覧</h2>
+				<% if @meetings.empty? %>
+					ミーティングがありません。わーい！
+				<% else %>
+				
+				<table>
+					<tr>
+						<th>プロジェクト名</th>
+						<th>ミーティングタイトル</th>
+						<th>場所</th>
+						<th>開始日</th>
+					</tr>
+					<% for meeting in @meetings %>
+					<tr>
+						<td><%=h meeting.project.name %></td>
+						<td><%= link_to meeting.title, :controller=> :meetings, :action=>:show, :id=>meeting.id %></td>
+						<td><%=h meeting.place.name %></td>
+						<td><%=h meeting.start_at.strftime("%m/%d %H時%M分") %>〜<%=h meeting.end_at.strftime("%H時%M分") %></td>
+					</tr>
+					<% end %>
+				</table>
+				
+				<% end %>
+				<br/><br/>
+				<h2>今日の予定</h2>
+				<% if @schedules.empty? %>
+					<p>今日の予定はありません。わーい！</p>
+				<% else %>
+				
+				<table>
+					<tr>
+						<th>タイトル</th>
+						<th>時間</th>
+					</tr>
+					<% for schedule in @schedules %>
+					<tr>
+						<td><%=h schedule.title %></td>
+						<td><%=h schedule.start_at.strftime("%H時%M分") %>〜<%=h schedule.end_at.strftime("%H時%M分") %></td>
+					</tr>
+					<% end %>
+				</table>
+				
+				<% end %>
+				<%= link_to "一覧", :controller => :schedules, :action => :week %>
+		  </div>
+		</div>
+	</div>
+	
+

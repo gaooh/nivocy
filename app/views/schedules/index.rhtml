@@ -1,0 +1,83 @@
+<script type="text/javascript">
+	var scheduler = new Scheduler();
+	
+	// RJSなどつかうやつはrhtmlじゃないとレンダリングされないのでrhtml側で追加
+	Scheduler.prototype.mouseupOnSchedule = function (schedule_id){
+	    if(this.currentElement != null){
+	        return this.endResize();
+	    }
+
+	    if(this.currentIndex == 0){
+			<%= remote_function( :url => {:action => 'ajax_edit_schedule' }, :with =>"'schedule_id=' + schedule_id") %>
+			tb_show("新規スケジュール登録","#TB_inline?height=300&width=400&inlineId=target_schedule",false);
+	    }
+
+	    return this.endTimeFieldCore();
+	};
+	
+</script>
+
+<%= link_to icon_image_tag('control_rewind_blue'), :action => 'move', :base_date => @base_date, :week_value => -7 %>
+<%= link_to icon_image_tag('control_back_blue'), :action => 'move', :base_date => @base_date, :week_value => -1 %>
+<%= link_to icon_image_tag('control_stop_blue'), :action => 'move', :base_date => Date.today, :week_value => 0 %>
+<%= link_to icon_image_tag('control_play_blue'), :action => 'move', :base_date => @base_date, :week_value => 1 %>
+<%= link_to icon_image_tag('control_fastforward_blue'), :action => 'move', :base_date => @base_date, :week_value => 7 %>
+
+<div id="target_schedule" style="display: none;">
+<%= render :partial => 'form' %>
+</div>
+
+<table id="main_table">
+<tr>
+	<th></th>
+	<% for day in @days %>
+	<th><%= day %></th>
+	<% end %>
+</tr>
+<tr>
+	<td>
+		<div id="time_" class="time_field">
+	    <% for j in 0..23 %>
+        	<div class="time_cell"><%= j%>:00&nbsp;</div>
+        <% end %>
+		</div>
+	</td>
+<% for i in 1..7 %>
+	<td id="test<%= i %>">
+		<div id="time<%= i %>" onMouseDown="scheduler.startTimeField(<%= i %>);" onMouseMove="scheduler.overTimeField();" onMouseUp="scheduler.endTimeField();" class="time_field">
+        <% for j in 0..47 %>
+        	<div id="cell<%= i %>_<%= j %>" class="cell"></div>
+        <% end %>
+    	<div id="target<%= i %>" class="time_target" ></div>
+		</div>
+	</td>
+<% end %>
+</tr>
+</table>
+
+<div style="background-color:#fff;">
+<% for schedule in @schedules %>
+<div id="schedule<%= schedule.id %>" class="schedule" style="height:<%= height(schedule).to_s + 'px' %>;"
+    onmousemove="scheduler.resize();"
+    onmouseup="scheduler.mouseupOnSchedule(<%= schedule.id %>);">
+    <div class="corner_schedule" style="height:<%= (height(schedule) - 10).to_s + 'px' %>;">
+		<%= schedule.title %>
+    </div>
+    <div id="scheduleBottom<%= schedule.id %>" class="scheduleBottom" onmousedown="scheduler.startResize(<%= schedule.id %>, <%= top_index(schedule) %>);"></div>
+</div>
+<script type="text/javascript">
+	var style = $("schedule<%= schedule.id %>").style;
+	style.top = (scheduler.getRegionTop("cell1_<%= top_index(schedule) %>") - 1 + 5) + "px";
+	style.left = (scheduler.getRegionLeft("time<%= left_index(schedule, @base_date) %>") + <%= schedule.left_margin %>) + "px";
+	style.width = <%= schedule.width %> + "px";
+</script>
+<% end %>
+</div>
+
+<script type="text/javascript">
+jQuery(document).ready(function()
+{
+  jQuery("div.schedule").corner("5px");
+});
+</script>
+<div id="addSchedule"></div>

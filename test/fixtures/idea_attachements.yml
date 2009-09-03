@@ -1,0 +1,22 @@
+# == Schema Information
+# Schema version: 49
+#
+# Table name: idea_attachements
+#
+#  id           :integer(11)     not null, primary key
+#  idea_id      :integer(11)     not null
+#  user_id      :integer(11)     not null
+#  content_type :string(128)     default(""), not null
+#  org_filename :string(200)     default(""), not null
+#  size         :integer(11)     not null
+#  created_at   :datetime        not null
+#  updated_at   :datetime        not null
+#  deleted_at   :datetime        
+#  file_data    :binary          
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  id: 1
+two:
+  id: 2

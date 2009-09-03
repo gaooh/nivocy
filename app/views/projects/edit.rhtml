@@ -1,0 +1,15 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to @project.name, :action => 'show', :id => @project  %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	編集
+<% end %>
+
+<h1 class="input"><%= @project.name %> の編集</h1>
+
+<% form_tag :action => 'update', :id => @project do %>
+  	<div class="input_contents">
+  		<%= render :partial => 'form' %>
+  	</div>
+	<%= button_image_submit_tag 'edit' %>
+<% end %>

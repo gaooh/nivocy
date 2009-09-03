@@ -1,0 +1,91 @@
+<% content_for(:discovery_rss) do %>
+	<%= auto_discovery_link_tag :rss, :controller => :ideas, :action => 'rss' %>
+<% end %>
+<% content_for(:rss) do %>
+	<%= link_to(icon_image_tag("feed"), { :controller => :ideas, :action=>'rss' }) %>
+<% end %>
+
+<div id="no_side">
+
+<%= icon_image_tag 'report_add' %>
+<%= link_to '新しくアイデアを投稿する', :action => 'new' %>
+
+<h1 class="input">最近コメントがあったアイデア</h1>
+
+<table>
+  <tr>
+	<th width="80px">投稿者</th>
+	<th width="40px">カテゴリ</th>
+	<th width="200px">タイトル</th>
+	<th width="30px">スコア</th>
+	<th width="80px">作成日</th>
+  </tr>
+  
+<% for idea in @recent_ideas %>
+  <tr>
+	<td><%=h idea.user.name %></td>
+	<td><%=h idea.idea_category.name %></td>
+	<td><%= link_to truncate(idea.title, 30), :action => :show, :id => idea %></td>
+	<td><%= idea.score %></td>
+	<td><%=h idea.created_at.strftime('%Y/%m/%d %H時') %></td>
+  </tr>
+<% end %>
+</table>
+<br/><br/>
+<h1 class="input">アイデア一覧</h1>
+
+<div class="search_form">
+<% form_tag :action => 'search' do %>
+	Search in <%= text_field 'search', 'word'  %>&nbsp;
+	カテゴリ:
+	<%= collection_select "search", "idea_category_id", @idea_categories, "id", "name", {:prompt => "全て"} %>&nbsp;
+	<%= submit_tag '検索する' %>
+<% end %>
+<br/>
+<%= paginate_first_number(@idea_pages) %>〜
+<%= paginate_last_number(@idea_pages) %>&nbsp;&nbsp;
+Total. <%= @idea_pages.item_count %>
+</div>
+<div class="clear" />
+
+<table>
+  <tr>
+	<th width="80px">投稿者</th>
+	<th width="40px">カテゴリ</th>
+	<th width="200px">タイトル</th>
+	<th width="30px">スコア</th>
+	<th width="80px">作成日</th>
+  </tr>
+  
+<% for idea in @ideas %>
+  <tr>
+	<td><%=h idea.user.name %></td>
+	<td><%=h idea.idea_category.name %></td>
+	<td><%= link_to truncate(idea.title, 30), :action => :show, :id => idea %></td>
+	<td><%= idea.score %></td>
+	<td><%=h idea.created_at.strftime('%Y/%m/%d %H時') %></td>
+  </tr>
+<% end %>
+</table>
+
+<span class="paginate">
+<% if @search.nil? %>
+
+<%= link_to "Prev", { :page => @idea_pages.current.previous } if @idea_pages.current.previous %>
+<%= paginate_number @idea_pages.last, @idea_pages.current.number %>
+<%= link_to "Next", { :page => @idea_pages.current.next } if @idea_pages.current.next %>
+
+<% else %>
+
+<%= link_to "Prev", { :page => @idea_pages.current.previous, 
+					  :search => {:word => @search.word, :idea_category_id => @search.idea_category_id }  
+					} if @idea_pages.current.previous %>
+<%= paginate_number @idea_pages.last, @idea_pages.current.number, {:word => @search.word, :idea_category_id => @search.idea_category_id }   %>
+<%= link_to "Next", { :page => @idea_pages.current.next, 
+					  :search => {:word => @search.word, :idea_category_id => @search.idea_category_id }
+ 					} if @idea_pages.current.next %>
+
+<% end %>
+</span>
+
+</div>

@@ -1,0 +1,37 @@
+
+common: &common
+  adapter: mysql
+  username: navi
+  password: navi
+  host: localhost
+  estraier:
+    host: 192.168.50.28
+    user: navi
+    password: navi
+    port: 1978
+    node: navi
+  master-1:
+    adapter: mysql
+    host: localhost
+    username: navi
+    password: navi
+  master-2:
+    adapter: mysql
+    host: localhost
+    username: navi
+    password: navi
+    
+development:
+  database: navi_development
+  <<: *common
+
+test:
+  database: navi_test
+  <<: *common
+    
+production:
+  database: nivocy_production
+  username: nivocy
+  password: nivocy
+  socket: /var/run/mysqld/mysqld.sock
+  <<: *common

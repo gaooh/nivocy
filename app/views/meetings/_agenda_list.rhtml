@@ -1,0 +1,15 @@
+<% form_tag :action => 'update_agenda' do %>
+	<%= hidden_field 'meeting', 'id' %>
+	<ul id="agenda_list">
+		<% for meeting_agenda in @meeting_agendas %>
+			<li id="agenda_list_<%= meeting_agenda.id %>"><%= icon_image_tag 'bullet_orange' %><%= meeting_agenda.title %></li>
+		<% end %>
+	</ul>
+	<span id="agenda_add_button" style="display:none">
+		<%= submit_tag '追加' %>
+	</span>
+<% end %>
+<%= link_to_remote('アジェンダ追加', :url => { :action => 'add_agenda' }) %>
+
+<%= sortable_element 'agenda_list', :url => { :action => :agenda_sort }, 
+	:complete => 'javascript:sortAgenda()' %>

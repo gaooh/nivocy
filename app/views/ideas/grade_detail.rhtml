@@ -1,0 +1,43 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to 'IDEA', :controller => :ideas %>
+<% end %>
+
+<% content_for(:breadcrumb_id) do %>
+	<%= link_to @idea.title, :contorller => :ideas, :action => :show, :id => @idea.id %>
+<% end %>
+
+<h1 class="input"><%=h @idea.title %></h1>
+
+<div id="no_side">
+	
+	<h2 class="input">評価平均</h1>
+	
+	<img src="<%= url_for :controller => :ideas, :action => :spider_graph, :id => @idea.id, :size => '600x400'  %>"><br>
+	
+	<h2 class="input">評価数合計</h1>
+		
+	<img src="<%= url_for :controller => :ideas, :action => :stocked_graph, :id => @idea.id, :size => '600x400'  %>">
+		
+	<h2>評価一覧</h2>
+		
+	<div class="task_log_contents">
+		<table>
+			<tbody id="tbody_comment">
+				<% @idea_grade_users.each_with_index { |idea_grade_user, index| %>
+					<tr class="task_log_contents_log<%= "_even" if index.even? %>">
+						<td width="100px">
+							<%= user_image(idea_grade_user.user) %><br/>
+							<%= idea_grade_user.created_at.strftime("%y/%m/%d %H:%M") %><br/>
+							#<%= index+1%>
+						</td>
+						<td>
+							<% @h_idea_grade[idea_grade_user.user_id].each do |idea_grade|%>
+								<%= idea_grade.grade_type.name %> : <%= idea_grade.value %>&nbsp;&nbsp;
+							<% end %>
+						</td>
+					</tr>
+				<% } %>
+			</tbody>
+		</table>
+	</div>
+</div>

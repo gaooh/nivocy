@@ -1,0 +1,2 @@
+id_name = "meeting_log_tbody#{@meeting_log.meeting_agenda.id}"
+page.insert_html :bottom, id_name, render(:partial => 'meeting_log_record', :locals => {:meeting_log=> @meeting_log})

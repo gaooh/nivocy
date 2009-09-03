@@ -1,0 +1,9 @@
+<ul class="carousel-list">
+	<% @idea_attachments.each do |idea_attachment| %>
+		<li id="idea_carousel-item-<%= idea_attachment.id %>" >
+			<a href="/idea_attachments/view_file/<%= idea_attachment.id %>">
+				<img src="/idea_attachments/thumbnail/<%= idea_attachment.id %>" title="<%= idea_attachment.org_filename%>" alt="<%= idea_attachment.org_filename%>"/>
+			</a>
+		</li>
+	<% end %>
+</ul>

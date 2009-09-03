@@ -1,0 +1,28 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@task.project.name, :controller => :projects, :action => :show, :id => @task.project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%= link_to @task.title, :action => :show, :id => @task.id %>
+<% end %>
+<% content_for(:breadcrumb_id) do %>
+	編集
+<% end %>
+
+<h1 class="input">タスクを変更する</h1>
+
+<div id="full">
+<% form_tag :action => 'update', :id => @task do %>
+	<div class="input_contents">
+  		<div id="post_task">
+
+		<p><label for="task_title">タイトル</label>
+		<%= text_field 'task', 'title'  %></p>
+
+		<p><label for="task_content">内容</label>
+		<%= text_area 'task', 'content', "cols" => 80, "rows" => 10 %></p>
+
+		</div>
+	</div>
+	<%= button_image_submit_tag 'edit' %>
+<% end %>
+</div>

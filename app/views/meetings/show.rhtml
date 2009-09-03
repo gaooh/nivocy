@@ -1,0 +1,203 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@meeting.project.name, :controller => :projects, :action => :show, :id => @meeting.project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%= @meeting.title %>
+<% end %>
+
+<script type="text/javascript">
+	 
+	function destory_confirm() {
+		if (Element.visible("destory_confirm")) {
+			Element.hide("destory_confirm")
+		} else {
+			new Effect.Appear("destory_confirm", { from:0.1, to:1.0, duration: 1.0 });
+		}
+	}
+	
+</script>
+
+<div class="task_content_navi">
+	<%= link_to_icon_text('page_edit', '編集', :action => 'edit', :id => @meeting.id )%>&nbsp;&nbsp;|
+	<% if delete_meeting? %>
+		<%= link_to_function_icon_text('page_delete', '削除', 'destory_confirm()')%>
+	<% end %>
+</div>
+
+<div id="full">
+
+	<div id="destory_confirm" class="info" style="display:none;">
+		<% form_tag :action => 'destroy' do %>
+			<%= hidden_field 'meeting', 'id' %>
+			削除するとミーティングログがすべて閲覧できなくなります。<br/>
+			「<%= @meeting.title %>」を削除していいですか？　
+			<%= submit_tag 'はい' %>&nbsp;
+			<%= button_to_function "いいえ", "destory_confirm()" %>
+		<% end %>
+	</div>
+	
+<div class="task_contents">
+	
+	<div class="task_date">
+		<span>&nbsp;|&nbsp;登録日 : <%=h @meeting.created_at.strftime("%Y/%m/%d") %></span>&nbsp;|&nbsp;
+		<span class="endday">開催日 : <%=h @meeting.start_at.strftime("%Y/%m/%d") %></span>
+	</div>
+
+	<div class="task_title">
+		<%=h @meeting.title %>
+	</div>
+	
+	
+	<div class="attribute">
+	
+	<table>
+		<tr>
+			<td width="140px"><strong>作成者:</strong></td><td><%= @meeting.create_user.name %></td>
+			<td width="140px"><strong>ファシリテーター:</strong></td><td><%= @meeting.facilitator.name %></td>
+		</tr>
+		<tr>
+			<td width="140px"><strong>場所:</strong></td><td><%= @meeting.place.name %></td>
+			<td width="140px"><strong>書記:</strong></td><td><%= @meeting.clerk.name %></td>
+		</tr>
+	</table>
+	
+	</div>
+	
+	<h3>参加者</h3>
+	<div class="meeting_user_list">
+		<% for entry_user in @meeting.meeting_entry_users %>
+		<div class="meeting_user_box">
+			<%= user_image(entry_user.user) %><br>
+			<%= entry_user.user.office_id %>
+		</div>
+		<% end %>
+		<div class="clear"></div> 
+	</div>
+</div>
+
+<h1 class="input">Meeting LOG</h1>
+
+<div class="task_left_contents">
+	<div class="task_left_contents_parts">
+		<h3>アジェンダ</h3>
+		<div id="target_agenda_list">
+			<%= render :partial => "agenda_list"%>
+		</div>
+	</div>
+	
+	<div class="task_left_contents_parts">
+		<ul>
+			<% if @edit_user.input_standard? && !closed? %>
+			<li><%= link_to_icon_text('pencil_go', "ワンライナー入力モード", :action => 'user_log_type_oneliner', :id => @meeting.id)  %></li>
+			<% end %>
+			<% if @edit_user.input_oneliner? && !closed? %>
+			<li><%= link_to_icon_text('layout_edit', "通常入力モード", :action => 'user_log_type_standard', :id => @meeting.id)  %></li>
+			<% end %>
+			<% if closed? %>
+				<li><%= link_to '開催する', :action=>'open', :id => @meeting.id %></li>
+			<% else %>
+				<li><%= link_to '閉会する', :action=>'closed', :id => @meeting.id %></li>
+			<% end %>
+			
+			<li><%= link_to '同じメンバーで再度会議を開く', :action => 'reholding', :id => @meeting.id %></li>
+			<li><%= link_to_icon_text('email', 'メンバーへ議事録を送信する', :action => 'send_mail_minutes', :id => @meeting.id)%></li>
+		</ul>
+	</div>
+</div>
+
+<script language="JavaScript">
+	
+	window.onload = function() {
+		Event.observe('tag_all', 'click', viewAll, false);
+		Event.observe('tag_memo', 'click', viewMemo, false);
+		Event.observe('tag_idea', 'click', viewIdea, false);
+		Event.observe('tag_mind', 'click', viewMind, false);
+		Event.observe('tag_conclusion', 'click', viewConclusion, false);
+		Event.observe('tag_todo', 'click', viewTodo, false);
+		<%= remote_function(:url => { :action => :ajax_sort_agenda, :id => @meeting.id }) %>
+	}
+
+	function viewAll() {
+		$("tag_all").className = "tag_current";
+		$("tag_memo").className = "";
+		$("tag_idea").className = "";
+		$("tag_mind").className = "";
+		$("tag_todo").className = "";
+		$("tag_conclusion").className = "";
+		<%= remote_function(:url => { :action => :ajax_sort_agenda, :id => @meeting.id }) %>
+	}
+	
+	function viewMemo() {
+		$("tag_all").className = "";
+		$("tag_memo").className = "tag_current";
+		$("tag_idea").className = "";
+		$("tag_mind").className = "";
+		$("tag_todo").className = "";
+		$("tag_conclusion").className = "";
+		<%= remote_function(:url => { :action => :ajax_sort_channel_agenda, :id => @meeting.id, :channel_id => MeetingLogType::MEMO }) %>
+	}
+	
+	function viewIdea() {
+		$("tag_all").className = "";
+		$("tag_memo").className = "";
+		$("tag_idea").className = "tag_current";
+		$("tag_mind").className = "";
+		$("tag_todo").className = "";
+		$("tag_conclusion").className = "";
+		<%= remote_function(:url => { :action => :ajax_sort_channel_agenda, :id => @meeting.id, :channel_id => MeetingLogType::IDEA }) %>
+	}
+	
+	function viewMind() {
+		$("tag_all").className = "";
+		$("tag_memo").className = "";
+		$("tag_idea").className = "";
+		$("tag_mind").className = "tag_current";
+		$("tag_todo").className = "";
+		$("tag_conclusion").className = "";
+		<%= remote_function(:url => { :action => :ajax_sort_channel_agenda, :id => @meeting.id, :channel_id => MeetingLogType::MIND }) %>
+	}
+	
+	function viewTodo() {
+		$("tag_all").className = "";
+		$("tag_memo").className = "";
+		$("tag_idea").className = "";
+		$("tag_mind").className = "";
+		$("tag_todo").className = "tag_current";
+		$("tag_conclusion").className = "";
+		<%= remote_function(:url => { :action => :ajax_sort_channel_agenda, :id => @meeting.id, :channel_id => MeetingLogType::TODO }) %>
+	}
+	
+	function viewConclusion() {
+		$("tag_all").className = "";
+		$("tag_memo").className = "";
+		$("tag_idea").className = "";
+		$("tag_mind").className = "";
+		$("tag_todo").className = "";
+		$("tag_conclusion").className = "tag_current";
+		<%= remote_function(:url => { :action => :ajax_sort_channel_agenda, :id => @meeting.id, :channel_id => MeetingLogType::CONCLUSION }) %>
+	}
+	
+	function clear_log_oneliner(meeting_agenda_id) {
+		$('record_' + meeting_agenda_id).value = "";
+	}
+	
+	function sortAgenda() {
+		<%= remote_function(:url => { :action => :ajax_sort_agenda, :id => @meeting.id }) %>
+	}
+</script>
+
+<div id="modernbricksmenu2">
+<ul>
+	<li id="tag_all" class="tag_current"　style="margin-left: 10px"><a title="all">全て</a></li>
+	<li id="tag_memo"><a title="memo">メモ</a></li>
+	<li id="tag_idea"><a title="idea">アイデア</a></li>
+	<li id="tag_mind"><a title="mind">意見</a></li>
+	<li id="tag_todo"><a title="todo">TODO</a></li>
+	<li id="tag_conclusion"><a title="conclusion">結論</a></li>
+</ul>
+</div>
+
+<div id="meeting_log_all">
+	<div id="target_meeting_log_list"></div>
+	<div class="clear" />
+</div>

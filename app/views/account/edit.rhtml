@@ -1,0 +1,15 @@
+<% content_for(:breadcrumb_controller) do %>
+	アカウント管理
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	編集
+<% end %>
+
+<h1 class="input">ユーザ情報の編集</h1>
+<div id="full">
+<% form_tag :action => 'update' do %>
+	<%= hidden_field 'user', 'id' %>
+	<%= render :partial => 'form' %>
+<%= button_image_submit_tag "edit" %>
+<% end %>
+</div>

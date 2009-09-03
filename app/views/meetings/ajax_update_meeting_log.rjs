@@ -1,0 +1,2 @@
+page.remove "meeting_log_form#{@meeting_log.id}"
+page.replace "meeting_log_record#{@meeting_log.id}", render(:partial => "meeting_log_record_info", :locals => { :meeting_log => @meeting_log })

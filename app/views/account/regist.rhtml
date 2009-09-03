@@ -1,0 +1,6 @@
+<h1 class="input">ユーザ登録</h1>
+<% form_tag :action => 'create' do %>
+	<%= hidden_field 'regist', 'key', :value=> params[:id] %>
+	<%= render :partial => 'form' %>
+<%= button_image_submit_tag "create" %>
+<% end %>

@@ -1,0 +1,62 @@
+# == Schema Information
+# Schema version: 49
+#
+# Table name: users_divisions
+#
+#  id          :integer(11)     not null, primary key
+#  user_id     :integer(11)     not null
+#  division_id :integer(11)     not null
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
+#  deleted_at  :datetime        
+#
+
+recode_1:
+  id: 1
+  user_id: 1
+  division_id: 1
+recode_2:
+  id: 2
+  user_id: 1
+  division_id: 2
+recode_3:
+  id: 3
+  user_id: 2
+  division_id: 1
+recode_4:
+  id: 4
+  user_id: 2
+  division_id: 2
+recode_5:
+  id: 5
+  user_id: 3
+  division_id: 1
+recode_6:
+  id: 6
+  user_id: 3
+  division_id: 2
+recode_7:
+  id: 7
+  user_id: 4
+  division_id: 1
+recode_8:
+  id: 8
+  user_id: 4
+  division_id: 2
+recode_9:
+  id: 9
+  user_id: 5
+  division_id: 1
+recode_10:
+  id: 10
+  user_id: 5
+  division_id: 3
+recode_11:
+  id: 11
+  user_id: 6
+  division_id: 1
+recode_12:
+  id: 12
+  user_id: 6
+  division_id: 3
+  

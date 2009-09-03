@@ -1,0 +1,51 @@
+<html>
+
+<head>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+<title>nivocy</title>
+<style type="text/css"><!--
+#top{background-color:#404040;color:#b0b0b0;}
+#top a{color:#b0b0b0;text-decoration:none;}
+#cont{border:5px solid #404040;padding:2px}
+#cont a{color:#393;text-decoration:none;}
+#cont a:hover{color:#393;background-color:#8cef8e;text-decoration:none;}
+#foot{background-color:#606060;color:#ccc}
+#foot a{color:#b0b0b0;text-decoration:none;}
+#foot a:hover{background-color:595959;color:#bobobo;text-decoration:none;}
+#notice{color:red}
+#warning{color:red}
+-->
+</style>
+</head>
+
+<body bgcolor="#ffffff" text="black">
+<div id="top">
+<font size="2" color="d0eb55">&nbsp;nivocy</font><br><br>
+<div style="background-color:#606060;text-align:center;display:block;">
+<font size="2" color="#cccccc"><%= @content_for_header_title ||= "HOME" %></font>
+</div>
+<div align="right"><font size="2"><%= user_name %></a></font></div>
+</div>
+
+
+<div id="cont">
+<br>
+
+<%= @content_for_layout %>
+
+<br>
+</div>
+
+
+<div id="foot">
+<font size="2">&nbsp;menu<br>
+<%= @content_for_footer %>
+</font>
+<div style="background-color:#404040;text-align:center;display:block;">
+<font size="2" color="#cccccc"><%= link_to 'ログアウト', :controller=>'account', :action=>'logout' if signin? %></font>
+</div>
+<br>
+<center><font size="1">(C)gaooh</font></center>
+</div>
+</body>
+</html>

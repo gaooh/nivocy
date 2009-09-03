@@ -1,0 +1,2 @@
+page.insert_html :bottom, 'agenda_list', '<li><input type="text" name="add_agenda[]" /></li>'
+page.show 'agenda_add_button'

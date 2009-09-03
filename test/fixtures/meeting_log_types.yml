@@ -1,0 +1,28 @@
+# == Schema Information
+# Schema version: 49
+#
+# Table name: meeting_log_types
+#
+#  id         :integer(11)     not null, primary key
+#  name       :string(200)     default(""), not null
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  deleted_at :datetime        
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+record_1:
+  id: 1
+  name: メモ
+record_2:
+  id: 2
+  name: アイデア
+record_3:
+  id: 3
+  name: 意見
+record_4:
+  id: 4
+  name: TODO
+record_5:
+  id: 5
+  name: 結論

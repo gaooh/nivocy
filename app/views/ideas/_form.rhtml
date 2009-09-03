@@ -1,0 +1,126 @@
+<script type="text/javascript">
+
+var ideaBodyErea;
+
+function showEdit() {
+	Element.hide($('help'));
+	Element.show($('idea_body'));
+	Element.hide($('preview_html'));
+	ideaBodyErea = new nicEditor({buttonList : []}).panelInstance('idea_body');
+}
+
+function convertHatena(){
+	Element.hide($('help'));
+	
+	ideaBodyErea.removeInstance('idea_body');
+	ideaBodyErea = null;
+	
+	var edit = $('idea_body')
+	var preview_html = $("preview_html");
+	
+	hatena = new Hatena();
+	
+	target_value = edit.value.replace(/<br>/g, '\n')
+	target_value = target_value.replace(/<p>/g, '')
+	target_value = target_value.replace(/<\/p>/g, '')
+	target_value = target_value.replace(/<\/p>/g, '')
+	target_value = target_value.replace(/<div.*?>/g, '')
+	target_value = target_value.replace(/<\/div>/g, '')
+	target_value = String._unescapeHTML(target_value);
+	
+	hatena.parse(target_value);
+	preview_html.innerHTML = hatena.html();
+	
+	Element.hide($('idea_body'));
+	Element.show($('preview_html'));
+}
+
+function showFileManager() {
+	if (Element.visible("idea_file_manager")) {
+		Element.hide("idea_file_manager")
+	} else {
+		new Effect.Appear("idea_file_manager", { from:0.1, to:1.0, duration: 1.0 });
+	}
+}
+function showHelp() {
+	if (Element.visible("help")) {
+		Element.hide($('help'));
+		showEdit();
+	} else {
+		ideaBodyErea.removeInstance('idea_body');
+		ideaBodyErea = null;
+		Element.hide($('idea_body'));
+		Element.hide($('preview_html'));
+		Element.show($('help'));
+	}
+}
+bkLib.onDomLoaded(function() { 
+	ideaBodyErea = new nicEditor({buttonList : []}).panelInstance('idea_body');
+});
+
+</script>
+<!--[form:idea]-->
+<div id="idea_form">
+<%= hidden_field 'idea', 'id' %>
+<p><label for="idea_idea_category_id">カテゴリ</label>
+<%= select_tag "idea[idea_category_id]", options_from_collection_for_select(@idea_categories, "id", "name"), "class"=>"w200"%><br></p>
+	
+<p><label for="idea_title">タイトル</label>
+<%= text_field 'idea', 'title'  %></p>
+
+<p><label for="idea_body">本文</label>
+	<%= link_to_function '編集', 'showEdit()' %>&nbsp;|&nbsp;
+	<%= link_to_function 'プレビュー', 'convertHatena()' %>&nbsp;|&nbsp;
+	<%= link_to_function '添付ファイル管理', 'showFileManager()' %>&nbsp;|&nbsp;
+	<%= link_to_function '記法ヘルプ', 'showHelp()' %></p>
+	
+<p><label for="idea_body">&nbsp;</label>
+<div id="preview_html" class="view_body" style="margin-left:100px; display: none"></div>
+<div id="help" style="display:none">
+	基本的にはてな記法互換です。見た目がおかしいのはcssの問題なのでわかり次第順次修正します。
+	<table style="width: 80%">
+		<tr>
+			<th>記法名</th>
+			<th>入力サンプル<th>
+			<th>補足<th>	
+		</tr>
+		<tr>
+			<td>見出し1</td>
+			<td>* 見出し</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>見出し2</td>
+			<td>** 見出し</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>見出し3</td>
+			<td>*** 見出し</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>リスト</td>
+			<td>- リスト</td>
+			<td>-の数で階層化が可能</td>
+		</tr>
+		<tr>
+			<td>数字付きリスト</td>
+			<td>+ リスト</td>
+			<td>+の数で階層化が可能</td>
+		</tr>
+		<tr>
+			<td>テーブル</td>
+			<td>|項目|項目|</td>
+			<td>* をつけることで見出しになります</td>
+		</tr>
+		<tr>
+			<td>URL</td>
+			<td>http://www.drecom.co.jp/</td>
+			<td>自動的にリンクが張られます</td>
+		</tr>
+	</table>
+</div>
+<%= text_area 'idea', 'body', "cols" => 80, "rows" => 10 %></p>
+</div>
+<!--[eoform:idea]-->

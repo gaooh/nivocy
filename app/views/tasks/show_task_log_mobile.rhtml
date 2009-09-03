@@ -1,0 +1,8 @@
+<% @task.task_logs.each_with_index { |task_log, index| %>
+<%= index+1 %>. <%= task_log.message %><br/>
+<%= task_log.user.name %>：<%= task_log.created_at.strftime("%m/%d %H:%M") %><br/><br/>
+<% } %>
+<br>
+<%= link_to_mobile 1, "概要を見る", {:action => :show, :id => @task.id} %><br>
+<%= link_to_mobile 2, "詳細を見る", {:action => :show_detail, :id => @task.id} %><br>
+<%= link_to_mobile 3, "リストへ戻る", {:action => :list} %><br>

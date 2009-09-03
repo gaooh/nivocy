@@ -1,0 +1,64 @@
+<% content_for(:breadcrumb_controller) do %>
+	スケジュール管理
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	月表示
+<% end %>
+<% content_for(:breadcrumb_id) do %>
+	<%= @base_date.strftime("%Y/%m") %>
+<% end %>
+
+<div class="schedule_menu_left">	
+	<%= link_to icon_image_tag('control_back_blue'), :action => :move_month, :base_date => @base_date, :month_value => -1 %>
+	<%= link_to icon_image_tag('control_stop_blue'), :action => :move_month, :base_date => Date.today, :week_value => 0 %>
+	<%= link_to icon_image_tag('control_play_blue'), :action => :move_month, :base_date => @base_date, :month_value => 1 %>
+</div>
+
+<div class="schedule_menu_right">
+	<%= render :partial => 'schedule_menu_right' %>
+</div>
+
+<div class="clear" />
+
+<table id="month_table">
+<tr>
+	<th>日</th>
+	<th>月</th>
+	<th>火</th>
+	<th>水</th>
+	<th>木</th>
+	<th>金</th>
+	<th>土</th>
+</tr>
+	
+	<% for week in @month_matrix.to_a.sort %>
+		<tr>
+			<% for date in @month_matrix[week[0]] %>
+				<td><% if date != 0 %><div class="month_suhedule_day"><%= date.day %>&nbsp;</div><% end %>
+					<% unless @day_long_schedules[date].nil? %>
+					<ul>
+						<% @day_long_schedules[date].each do |schdeule| %>
+							<li><%= link_to schdeule.title, :action => :show, :id => schdeule.id %></li>
+						<% end%>
+					</ul>
+					<% end %>
+					<% unless @schedules[date].nil? %>
+					<ul>
+						<% @schedules[date].each do |schdeule| %>
+							<li><%= link_to "#{schdeule.start_at.strftime("%H:%M")} #{schdeule.title}", :action => :show, :id => schdeule.id %></li>
+						<% end%>
+					</ul>
+					<% end %>
+				</td>
+			<% end %>
+		</tr>
+	<%end%>
+</table>
+<br/>
+
+<script type="text/javascript">
+jQuery(document).ready(function()
+{
+  jQuery("div.month_suhedule_day").corner("5px");
+});
+</script>

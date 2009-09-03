@@ -1,0 +1,71 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to 'IDEA', :controller => :ideas %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	ファイル管理
+<% end %>
+
+<script type="text/javascript">
+	function updateFiles(arg) {
+		<%= remote_function(:update => "idea_attachment_list", 
+		 					:url => { :controller => :idea_attachments, :action => 'ajax_update_list' }) %>
+	}
+
+	function destoryConfirm(name, value) {
+		$('idea_attachment_id').value = value;
+		$('idea_attachment_filename').innerHTML = name;
+		if (Element.visible("destory_confirm")) {
+			Element.hide("destory_confirm")
+		} else {
+			new Effect.Appear("destory_confirm", { from:0.1, to:1.0, duration: 1.0 });
+		}
+	}
+
+</script>
+
+<div id="no_side">
+	
+<h1 class="input">アイデア関連ファイルをアップロードする</h1>
+
+<%= form_tag_with_upload_progress({:controller => :idea_attachments, :action => 'upload'}, {
+ 	:begin => "new Effect.Appear('status')",
+ 	:finish => "updateFiles(arguments)" }) %>  
+
+	<%= file_field 'document', 'file' %>
+	<%= hidden_field 'idea_attachment', 'idea_id', :value => 1 %>    
+	<%= submit_tag 'Upload' %>
+
+	<div id="status" style="display: none">
+		<%= upload_status_tag %>
+	</div>
+
+<%= end_form_tag %>
+
+<h1 class="input">アップロード済みファイル一覧</h1>
+
+<div id="destory_confirm" class="info" style="display: none;">
+	<% form_tag :action => 'destroy' do %>
+		<%= hidden_field 'idea_attachment', 'id' %>
+		削除した画像がアイデア等で使われていた場合、そちらも閲覧できなくなります。<br/>
+		<span id="idea_attachment_filename">aaaa</span>を削除していいですか？
+		<%= submit_tag 'はい' %>&nbsp;
+		<%= button_to_function "いいえ", "destoryConfirm()" %>
+	<% end %>
+</div>
+
+<span style="float: right">
+<%= paginate_first_number(@idea_attachment_pages) %>〜
+<%= paginate_last_number(@idea_attachment_pages) %>&nbsp;&nbsp;
+Total. <%= @idea_attachment_pages.item_count %>
+</span>
+<div class="clear" />
+
+<div id="idea_attachments">
+<%= render :partial => 'idea_attachments/common_table_list' %>
+</div>
+
+<span class="paginate">
+<%= link_to "Prev", { :page => @idea_attachment_pages.current.previous } if @idea_attachment_pages.current.previous %>
+<%= paginate_number @idea_attachment_pages.last, @idea_attachment_pages.current.number %>
+<%= link_to "Next", { :page => @idea_attachment_pages.current.next } if @idea_attachment_pages.current.next %>
+</span>

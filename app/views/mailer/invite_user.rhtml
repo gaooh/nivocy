@@ -1,0 +1,12 @@
+
+<%= @invite_user.email %> さん
+
+<%= @invite_user.from_user.office_id %> さんより「<%= APP_CONFIG[:service_name] %>」へ招待されました。
+
+以下のURLへアクセスし、登録処理をしてください。
+
+【URL】
+<%= APP_CONFIG[:url] %>account/regist/<%= @invite_user.invite_code %>
+
+--
+<%= APP_CONFIG[:service_name] %> (c)2007, gaooh

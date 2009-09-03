@@ -1,0 +1,18 @@
+<% form_tag :action => 'list' do %>
+<%= select_tag "project_id", options_from_collection_for_select(@projects, "id", "name"), "class"=>"w200" %>
+<%= submit_tag '絞り込み' %>
+<% end %>
+&#xE683;<% unless @target_project.nil? %>[<%= @target_project.name %>]<% end %>タスク一覧<br>
+
+<% for task in @tasks %>
+・<%= link_to truncate(task.title, 12), :action => :show, :id => task %><br/>
+<% end %>
+<br/>
+
+<% if @target_project.nil? %>
+<%= link_to_mobile 1, "前へ", { :page => @task_pages.current.previous } if @task_pages.current.previous %><br/>
+<%= link_to_mobile 2, "次へ", { :page => @task_pages.current.next } if @task_pages.current.next %>
+<% else %>
+<%= link_to_mobile 1, "前へ", { :page => @task_pages.current.previous, :project_id => @target_project.id  } if @task_pages.current.previous %><br/>
+<%= link_to_mobile 2, "次へ", { :page => @task_pages.current.next, :project_id => @target_project.id } if @task_pages.current.next %>
+<% end %>

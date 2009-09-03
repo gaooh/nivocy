@@ -1,0 +1,146 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@task.project.name, :controller => :projects, :action => :show, :id => @task.project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%= @task.title %>
+<% end %>
+
+<script type="text/javascript">
+	 
+	function destory_confirm() {
+		if (Element.visible("destory_confirm")) {
+			Element.hide("destory_confirm")
+		} else {
+			new Effect.Appear("destory_confirm", { from:0.1, to:1.0, duration: 1.0 });
+		}
+	}
+	
+</script>
+
+<div class="task_content_navi">
+	<%= link_to_icon_text('page_edit', '編集', :action => 'edit', :id => @task.id )%>&nbsp;&nbsp;|
+	<% if delete_task? %>
+		<%= link_to_function_icon_text('page_delete', '削除', 'destory_confirm()')%>
+	<% end %>
+</div>
+<div class="clear"/>
+
+<div id="full">
+	<div id="destory_confirm" class="info" style="display: none;">
+		<% form_tag :action => 'destroy' do %>
+			<%= hidden_field 'task', 'id' %>
+			削除するとタスクログも含めてすべて閲覧できなくなります<br/>
+			<%= @task.title%>を削除していいですか？　
+			<%= submit_tag 'はい' %>&nbsp;
+			<%= button_to_function "いいえ", "destory_confirm()" %>
+		<% end %>
+	</div>
+	
+<div class="task_contents">
+	
+	<div class="task_date">
+		<span>&nbsp;|&nbsp;登録日 : <%=h @task.created_at.strftime("%Y/%m/%d") %></span>&nbsp;|&nbsp;
+		<span class="endday">期限日 : <%=h @task.goal_at.strftime("%Y/%m/%d") %></span>
+	</div>
+
+	<div class="task_title">
+		<%=h @task.title %>
+	</div>
+	
+	
+	<div class="attribute">
+	
+	<table>
+		<tr>
+			<td width="100px"><strong>状態:</strong></td><td><%= @task.status.name %></td>
+			<td width="120px"><strong>マイルストーン:</strong></td><td><%= @task.milestone.name unless @task.milestone.nil? %></td>
+		</tr>
+		<tr>
+			<td width="100px"><strong>作成者:</strong></td><td><%= @task.create_user.name %></td>
+			<td width="100px"><strong>担当者:</strong></td><td><%= @task.treat_user.name %></td>
+		</tr>
+	</table>
+		
+	</div>
+	
+	<div class="task_content">
+		<%= to_hatena(@task.content) %>
+	</div>
+
+</div>
+
+<h1 class="input">LOG</h1>
+
+<div class="task_log_contents">
+	<table>
+	<tbody id="tbody_task_log">
+	<% @task.task_logs.each_with_index { |task_log, index| %>
+		<tr class="task_log_contents_log<%= "_even" if index.even? %>">
+			<td width="100px">
+				<%= user_image(task_log.user) %><br/>
+				<%= task_log.created_at.strftime("%y/%m/%d %H:%M") %><br/>
+				#<%= index+1%>
+			</td>
+			<td><%= task_log.message %></td>
+		</tr>
+	<% } %>
+	</tbody>
+	</table>
+</div>
+
+<script language="JavaScript">
+	
+	var calendar;
+	
+	function initCalendar() { 
+		calendar　= createJaCalendarObj("goal_calendar");
+		calendar.selectEvent.subscribe(caldendarSelect, calendar, true);
+		calendar.render();  
+		YAHOO.util.Event.addListener("task_goal_day", "focus", calendarFocus, calendar, true); 
+	}
+	
+	function caldendarSelect(type, args, obj) {
+		var dates = args[0][0];  
+		var year = dates[0], month = dates[1], day = dates[2];
+		$('task_goal_day').value = year + '/' + month + "/" + day;
+		calendar.hide();
+	}
+	
+	function calendarFocus(type, args, obj) {
+		calendar.show();
+	}
+</script>
+
+<div id="post_task_log">
+<% form_remote_tag :url => { :controller => 'task_logs', :action => 'ajax_create' } do %>
+<%= hidden_field 'task_log', 'task_id', :value=>@task.id %>
+<%= hidden_field 'task', 'id', :value=>@task.id %>
+
+<p><label for="task_milestone_id">マイルストーン</label>
+<%= select_tag "task[milestone_id]", options_from_collection_for_select(@milestones, "id", "name"), "class"=>"w200" %><br></p>
+
+<p><label for="task_treat_user_id">担当者</label>
+<%= select_tag "task[treat_user_id]", options_from_collection_for_select(@users, "id", "name", @task.treat_user_id), "class"=>"w200" %><br></p>
+
+<p><label for="task_status_id">状態</label>
+<%= select_tag "task[status_id]", options_from_collection_for_select(@status, "id", "name", @task.status_id), "class"=>"w200" %><br></p>
+
+<p><label for="task_goal_at">完了予定日</label>
+<%= text_field 'task_goal', 'day' , :size=>'10', :value=>@task.goal_at.strftime("%Y/%m/%d")%>
+<%= select_hour_minute @task.goal_at, :prefix => 'task_goal', :field_name=>'time' %></p>
+<div id="goal_calendar"></div>
+
+<p><label for="task_log_message">コメント</label>
+<%= text_area 'task_log', 'message', "cols" => 80, "rows" => 10  %></p>
+
+</div>
+
+<%= button_image_submit_tag "create" %>
+
+</div>
+
+<% end %>
+
+<script type="text/javascript">
+onloadFunctions.appendFunction(new OnloadFunction(initCalendar));
+</script>

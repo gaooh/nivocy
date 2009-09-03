@@ -1,0 +1,33 @@
+
+<% form_tag :action => 'update' do %>
+
+<h2>マイルストーン:</h2>
+	<ul id="milestone_list">
+		<% for milestone in @milestones %>
+		<li><%= text_field 'milestone', milestone.id, :value=>milestone.name %></li>
+		<% end %>
+	</ul>
+	<%= link_to_remote('[追加]', :url => { :action => 'add_milestone' }) %>
+	
+<h2>状態:</h2>
+	<ul id="status_list">
+		<% for status in @statuses %>
+		<li><%= text_field 'status', status.id, :value=>status.name %></li>
+		<% end %>
+	</ul>
+	<%= link_to_remote('[追加]', :url => { :action => 'add_status' }) %>
+
+<p><%= submit_tag "更新" %></p>
+
+<h2>場所:</h2>
+	<ul id="place_list">
+		<% for place in @places %>
+		<li><%= text_field 'place', place.id, :value=>place.name %></li>
+		<% end %>
+	</ul>
+	<%= link_to_remote('[追加]', :url => { :action => 'add_place' }) %>
+
+<p><%= submit_tag "更新" %></p>
+
+<% end %>
+	

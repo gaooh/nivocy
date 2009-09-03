@@ -1,0 +1,36 @@
+<script type="text/javascript">
+
+function updateFiles(arg) {
+	//$('message').innerHTML = arg[0]
+	<%= remote_function(:update => "idea_attachment_list", 
+		 				:url => { :controller => :idea_attachments, :action => 'ajax_update_user_list' }) %>
+}
+
+</script>
+
+<div id="idea_file_manager" style="display:none">
+	
+	<%= form_tag_with_upload_progress({:controller => :idea_attachments, :action => 'upload'}, {
+	 	:begin => "new Effect.Appear('status')",
+	 	:finish => "updateFiles(arguments)" }) %>  
+
+		<%= file_field 'document', 'file' %>
+		<%= hidden_field 'idea_attachment', 'idea_id', :value => 1 %>    
+		<%= submit_tag 'Upload' %>
+
+		<div id="status" style="display: none">
+			<%= upload_status_tag %>
+		</div>
+
+	<%= end_form_tag %>
+	
+	<div id="idea_attachment_list" >
+		<%= render :partial => 'idea_attachments/common_list' %>
+	</div>
+	
+    <div class="clear">&nbsp;</div>
+	<%= link_to '→ファイル管理ページへ', :controller => :idea_attachments, :action => 'list' %>
+
+</div>
+
+<div class="clear"/>

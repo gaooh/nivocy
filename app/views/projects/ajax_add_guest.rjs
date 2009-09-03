@@ -1,0 +1,1 @@
+page.insert_html :bottom, 'guest_user_list', render(:partial => "add_guest")

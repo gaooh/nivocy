@@ -1,0 +1,1 @@
+page.insert_html :bottom, 'place_list', '<li><input type="text" name="add_place[]" /></li>'

@@ -1,0 +1,2 @@
+page.hide "meeting_log_record#{@meeting_log.id}"
+page.insert_html :bottom, "meeting_log_form_target#{@meeting_log.id}", render(:partial => 'meeting_log_form', :locals => { :meeting_log => @meeting_log, :meeting_agenda => @meeting_log.meeting_agenda})

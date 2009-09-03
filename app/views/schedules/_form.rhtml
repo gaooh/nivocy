@@ -1,0 +1,47 @@
+<script type="text/javascript">
+	function selectEntryUserBox() {
+		var target = $('target_select_entry_user_box');
+		if (Element.visible(target)) {
+			Element.hide(target);
+		} else {
+			Element.show(target);
+		}
+	}
+	
+	function searchPickupSchedule() {
+		var time = $F('pickup_time');
+		var target_day = $F('pickup_day');
+		var selected_users = document.getElementsByName('selectUser[]');
+		var selected_user_id_array = new Array();
+		for( i = 0 ; i < selected_users.length; i++) {
+			selected_user_id_array.push(selected_users[i].value);
+		}
+		<%= remote_function( :url => {:action => 'ajax_show_pickup'}, 
+				:with =>"'member=' + selected_user_id_array + '&time=' + time + '&target_day=' + target_day") %>
+	}
+	
+</script>
+
+<div id="target_schedule_content">
+
+<% form_tag :action => "easy_create" do %>
+<%= hidden_field 'setup', 'base_date', :value => @base_date.strftime("%Y-%m-%d") %>
+<%= hidden_field 'schedule', 'start_at' %>
+<%= hidden_field 'schedule', 'end_at' %>
+
+<p><label for="schedule_day">日時:</label>&nbsp;
+	<span id="view_setup_day">2000/01/01</span>&nbsp;<span id="view_setup_start_at">12:00</span>〜<span id="view_setup_end_at">13:00</span></p>
+
+<p><label for="schedule_title">タイトル</label><br/>
+<%= text_field 'schedule', 'title', :size => "35" %></p>
+
+<p><label for="schedule_description">概要</label><br/>
+<%= text_area 'schedule', 'description', :size => "50x5" %></p>
+
+<%= hidden_field 'schedule', 'day_long_flag' %>
+
+<%= button_image_submit_tag "create_w" %>
+
+<% end %>
+
+</div>

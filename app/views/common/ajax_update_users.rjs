@@ -1,0 +1,1 @@
+page.replace @form_id, render(:partial => 'select_user', :locals => {:html_id=> @form_id, :users => @users})

@@ -1,0 +1,75 @@
+<script type="text/javascript">
+	var calendar;
+	var add_guest_count = 0;
+	
+	function init() {
+		initCalendar();
+	}
+	
+	function initCalendar() { 
+		calendar = createJaCalendarObj("project_start_calendar");
+		calendar.selectEvent.subscribe(caldendarSelect, calendar, true);
+		calendar.render();  
+		YAHOO.util.Event.addListener("project_start_at_day", "focus", calendarFocus, calendar, true); 
+	}
+
+	function caldendarSelect(type, args, obj) {
+		var dates = args[0][0];  
+		var year = dates[0], month = dates[1], day = dates[2];
+		var nextMonth = new Date(year, month, day);
+		var nextMonthYear = nextMonth.getYear()+1900, nextMonthMonth = nextMonth.getMonth()+1, nextMonthDate = nextMonth.getDate();
+		$('project_start_at_day').value = year + '/' + month + "/" + day;
+		$('project_goal_at_day').value = nextMonthYear + '/' + nextMonthMonth + "/" + nextMonthDate;
+		calendar.hide();
+	}
+
+	function calendarFocus(type, args, obj) {
+		calendar.show();
+	}
+	
+	function addGuest() {
+		add_guest_count = add_guest_count + 1;
+		<%= remote_function( :url => {:action => 'ajax_add_guest'}, 
+							:with =>"'email=' + $F('invite_user_email') + '&add_guest_count=' + add_guest_count") %>
+		$('invite_user_email').value = "";
+	}
+</script>
+<%= error_messages_for 'project' %>
+
+<!--[form:project]-->
+<div id="project_form">
+<p><label for="project_name">名前</label>
+<%= text_field 'project', 'name'  %></p>
+
+<p><label for="project_summary">概要</label>
+<%= text_field 'project', 'summary'  %></p>
+
+<p><label for="project_start_at">開始日</label>
+<%= text_field 'project_start_at', 'day' , :size=>'10', :value=>@project.start_at.strftime("%Y/%m/%d") %></p>
+<div id="project_start_calendar"></div>
+
+<p><label for="project_goal_at">終了予定日</label>
+<%= text_field 'project_goal_at', 'day' , :size=>'10', :value=>@project.goal_at.strftime("%Y/%m/%d") %></p>
+
+<p>参加者</p>
+<%= render :partial => 'common/select_user_box' %>
+
+<p><label for="invite_user_email">ゲスト</label>
+<%= text_field_with_auto_complete :invite_user, :email, {"style"=>"float: left; margin-right:10px;" }, 
+								:url => {:action => "auto_complete_for_drecom_users" },
+								:min_chars=>1, :skip_style => true%><a href="javascript:addGuest()">追加</a></p>
+<div class="clear"></div>
+<div id="guest_user_list"></div>
+
+<ul>
+<% @select_guest_users.each do |select_guest_user| %>
+	<li><%= select_guest_user.email %></li>
+<% end %>
+</ul>
+</div>
+<!--[eoform:project]-->
+
+<script type="text/javascript">
+onloadFunctions.appendFunction(new OnloadFunction(init()));
+</script>
+

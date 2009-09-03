@@ -1,0 +1,17 @@
+<% for meeting_agenda in @meeting_agendas %>
+<div class="task_right_contents">
+	<h3><%= icon_image_tag 'tag_orange' %> <%= meeting_agenda.title %></h3>
+	<table>
+		<% for meeting_log in meeting_agenda.meeting_logs %>
+			<% if meeting_log.type_id == @channel_id %>
+				<tr id="meeting_log_recode_<%= meeting_log.id %>">
+					<td><%= meeting_log.meeting_log_type.name %></td>
+					<td><%= meeting_log.voice %></td>
+					<td><%= meeting_log.user.office_id %></td>
+					<td><%= link_to_remote('削除', :url => { :action => 'ajax_delete_meeting_log', :id => meeting_log.id }) %></td>
+				</tr>
+			<% end %>
+		<% end %>
+	</table>
+</div>
+<% end %>

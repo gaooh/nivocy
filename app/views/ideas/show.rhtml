@@ -1,0 +1,138 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to 'IDEA', :controller => :ideas %>
+<% end %>
+
+<% content_for(:breadcrumb_id) do %>
+	<%= @idea.title %>
+<% end %>
+
+<script type="text/javascript">
+    function showGradeVote() {
+		if(Element.visible($('gradeVote'))) {
+			Element.hide($('gradeVote'));
+			Element.show($('gradeMessageOpen'));
+			Element.hide($('gradeMessageClose'));
+		} else {
+			Element.show($('gradeVote'));
+			Element.hide($('gradeMessageOpen'));
+			Element.show($('gradeMessageClose'));
+		}
+	}
+	function destory_confirm() {
+		if (Element.visible("destory_confirm")) {
+			Element.hide("destory_confirm")
+		} else {
+			new Effect.Appear("destory_confirm", { from:0.1, to:1.0, duration: 1.0 });
+		}
+	}
+	
+	function showCommentForm() {
+		if (Element.visible("idea_form")) {
+			Element.hide("idea_form")
+		} else {
+			new Effect.Appear("idea_form", { from:0.1, to:1.0, duration: 1.0 });
+		}
+	}
+
+</script>
+
+<h1 class="input"><%=h @idea.title %></h1>
+
+<div id="main">
+	<div class="right_side">
+		<div class="pad">
+			
+			<h3>評価グラフ:</h3>
+			
+			<p><img src="<%= url_for :controller => :ideas, :action => :spider_graph, :id => @idea.id, :size => '200x150' %>"></p>
+			<p>評価人数:<%= @grade_memeber_count %>人.. <%= link_to '詳しく見る', :action => :grade_detail, :id => @idea.id %></p>
+			<a id="gradeMessageOpen" href="javascript:showGradeVote();">評価する</a>
+			<a id="gradeMessageClose" href="javascript:showGradeVote();" style="display: none">閉じる</a>
+			
+			<div id="gradeVote" style="display: none">
+			<% @grade_types.each_with_index do |grade_type, index| %>
+				<div class="rating_mini_box">
+					<%= grade_type.name %>: <div id="rating_<%= index %>" class="rating_container"></div>
+				</div>
+			<% end %>
+			</div>
+			<div id="gradeVoteForm" style="display: none">
+				<% form_tag :action => 'grade' do %>
+					<%= hidden_field 'idea', 'id' %>
+					<% @grade_types.each do |grade_type| %>
+						<%= hidden_field 'grade', "#{grade_type.id}" %>
+					<% end %>
+					<%= submit_tag '投票する' %>
+				<% end %>
+			</div>
+		</div>
+	
+	</div>
+	
+	<div class="task_content_navi">
+		<span style="float: left;">
+		</span>
+		<span style="float: right;">
+			<% if edit_idea? %>
+				<%= link_to_icon_text('report_edit', '編集', :action => 'edit', :id => @idea)%>&nbsp;&nbsp;|
+			<% end %>
+			<% if delete_idea? %>
+				<%= link_to_function_icon_text('bin_closed', '削除', 'destory_confirm()')%>&nbsp;&nbsp;
+			<% end %>
+		</span>
+	</div>
+	<br>
+	
+	<div id="left_side">
+		<div id="destory_confirm" class="confirm" style="display: none;">
+			<% form_tag :action => 'destroy' do %>
+				<%= hidden_field 'idea', 'id' %>
+				削除するとコメント、評価すべて閲覧できなくなります。<br/>
+				<%= @idea.title%>を削除していいですか？
+				<%= submit_tag 'はい' %>&nbsp;
+				<%= button_to_function "いいえ", "destory_confirm()" %>
+			<% end %>
+		</div>
+		
+		<div class="view_body"><%= to_hatena(@idea.body) %></div>
+		<div class="mpart">
+			<h2>コメント一覧</h2>
+			<%= link_to_function 'コメントを書く', 'showCommentForm()' %>&nbsp;&nbsp;|
+			<%= link_to '全て', :action => :show, :id => @idea.id %>&nbsp;&nbsp;|
+			<% @idea_comment_types.each_with_index do |idea_comment_type,index| %>
+				<%= link_to_remote idea_comment_type.name, 
+								:url => {:action => 'ajax_show_type_comment', 
+										 :idea_id => @idea.id, 
+										 :idea_comment_type_id => idea_comment_type.id } %> 
+				<% if @idea_comment_types.length > index+1 %>&nbsp;&nbsp;|<% end %>
+			<% end %>
+			
+			<%= render :partial => 'comment_form' %>
+			
+			<%= render :partial => 'comment_list' %>
+			
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    
+	<% @grade_types.each_with_index do |grade_type, index| %>
+	new Control.Rating('rating_<%= index %>',{
+        max: 5,
+        afterChange: function(value){
+			$("grade_<%= grade_type.id %>").value = value;
+			var viewSubmitButton = true;
+			<% @grade_types.each do |check_grade_type| %>
+				if($("grade_<%= check_grade_type.id %>").value == '') {
+					viewSubmitButton = false;
+				}
+			<% end %>
+			if(viewSubmitButton) {
+				new Effect.Appear("gradeVoteForm", { from:0.1, to:1.0, duration: 1.0 });
+			}
+        }
+    });
+	<% end %>
+	
+</script>

@@ -1,0 +1,7 @@
+<tr id="meeting_log_record<%= meeting_log.id %>">
+	<td width="60px"><%= meeting_log.meeting_log_type.name %></td>
+	<td><%= meeting_log.voice %></td>
+	<td width="80px"><%= meeting_log.user.name %></td>
+	<td width="20px"><%= link_to_remote(icon_image_tag('pencil'), :url => { :action => 'ajax_edit_meeting_log', :id => meeting_log.id }) unless closed? %></td>
+	<td width="20px"><%= link_to_remote(icon_image_tag('bin_closed'), :url => { :action => 'ajax_delete_meeting_log', :id => meeting_log.id }) unless closed? %></td>
+</tr>

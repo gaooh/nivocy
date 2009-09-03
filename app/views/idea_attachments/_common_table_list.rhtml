@@ -1,0 +1,18 @@
+<table>
+	<tr>
+		<th width="120px"></th>
+		<th>ファイル名</th>
+		<th>更新日</th>
+		<th>size</th>
+		<th></th>
+	</tr>
+	<% @idea_attachments.each_with_index do | idea_attachment, index |%>
+	<tr <% if index % 2 == 0 %>class="project_attachemets_file_list_even"<% end %> height="20px">
+		<td><img src="/idea_attachments/thumbnail/<%= idea_attachment.id %>" /></td>
+		<td><%= link_to idea_attachment.org_filename, :action => 'view_file', :id => idea_attachment.id %></td>
+		<td><%= idea_attachment.updated_at.strftime("%Y/%m/%d") %></td>
+		<td><%= byte_column(idea_attachment.size) %></td>
+		<td><%= link_to_function '削除', "destoryConfirm('#{idea_attachment.org_filename}', #{idea_attachment.id})" %></td>
+	</tr>
+	<% end %>
+</table>

@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Projects: <%= controller.action_name %></title>
+  <% if signin? %>
+	<%= @content_for_discovery_rss ||= auto_discovery_link_tag :rss, :controller => user_name, :action => 'rss' %>
+  <% end %>
+  <%= stylesheet_link_tag 'style' %>
+  <%= stylesheet_link_tag 'thickbox' %>
+  <%= stylesheet_link_tag 'sweetTitles' %>
+  
+  <% if container_calendar? %>
+	<%= stylesheet_link_tag 'calendar' %>
+  <% else %>
+  	<%= stylesheet_link_tag 'calendar_popup' %>
+  <% end %>
+  <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag 'yui/yahoo.js' %>
+  <%= javascript_include_tag 'yui/dom.js' %>
+  <%= javascript_include_tag 'yui/event.js' %>
+  <%= javascript_include_tag 'yui/calendar.js' %>
+  <%= javascript_include_tag 'yui/dragdrop.js' %>
+　　<%= javascript_include_tag 'yui/animation.js' %>
+  <%= javascript_include_tag 'carousel.js' %>
+  <%= javascript_include_tag 'nicEdit.js' %>
+  <%= javascript_include_tag 'text-hatena0-2.js' %>
+  <%= javascript_include_tag 'control.rating.1.0.1.js' %>
+  <%= javascript_include_tag 'jquery-1.2.6.js' %>
+  <%= javascript_tag "jQuery.noConflict();" %>
+  <%= javascript_include_tag 'jquery.corner.js' %>
+  <%= javascript_include_tag 'thickbox.js' %>
+  <%= javascript_include_tag 'sweet-titles/addEvent.js' %>
+  <%= javascript_include_tag 'sweet-titles/sweetTitles.js' %>
+  <%= javascript_include_tag 'app.js' %>
+  <%= javascript_include_tag 'scheduler.js' %>
+  <%= javascript_include_tag 'multiple-onload.js' %>
+</head>
+<body>
+
+	<div id="topbar">
+			<div class="content">
+				<div id="icons">
+					<% if signin? %>
+						<%= link_to image_tag("home.gif"), :controller => :appointments, :action => 'show' %>
+						<a href="/contact/" title="Contact us"><img src="/images/contact.gif" alt="Contact" /></a>
+						<a href="/sitemap/" title="Sitemap"><img src="/images/sitemap.gif" alt="Sitemap" /></a>
+						<%= @content_for_rss ||= link_to(icon_image_tag("feed"), { :controller => user_name, :action=>'rss' }) %>
+					<% end %>
+				</div>
+				<div class="url">
+					<% if signin? %>
+						<a href="#" title=""><%= user_email %></a>&nbsp;<%= link_to 'サインアウト', :controller => :account, :action => 'signout' %>
+					<% end %>
+				</div>
+			</div>
+	</div>
+	
+	
+	<div id="top">
+		<div class="content">
+				<div id="menu">
+					<% if signin? %>
+					<ul>	
+						<li><%= link_to '<span>HOME</span>', :controller=>'home' %></li>
+						<li><%= link_to '<span>IDEA</span>', :controller=>'ideas' %></li>
+						<li><%= link_to '<span>PROJECT</span>', :controller=>'projects' %></li>
+						<li><%= link_to '<span>TASK</span>', :controller=>'tasks' %></li>
+						<li><%= link_to '<span>SETUP</span>', :controller=>'account', :action=>'edit', :id => user_id %></li>
+						<li><a href="#" title="Abous us"><span>WIKI</span></a></li>
+					</ul>
+					<% end %>
+				</div>
+				<h1><a href="#" title=""><%= APP_CONFIG[:service_name] %></a></h1>
+				<h2>ぷろじぇくとかんりツールらしい</h2>
+				
+				<div id="topic_path"><%= breadcrumb %></div>
+		</div>
+		
+	</div>
+	
+	<div class="content">
+		
+		<%= render :partial => 'common/message' %>
+		
+		<%= yield  %>
+
+		<%= render :partial => 'layouts/footer' %>
+		
+		
+	</div>
+
+</body>
+</html>

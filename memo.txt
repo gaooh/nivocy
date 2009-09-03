@@ -1,0 +1,81 @@
+link color : d0eb55
+onmouseup
+t.column "project_id",           :integer,  :null => false
+t.column "invite_user_id",       :integer,  :null => false
+
+script/plugin install svn+ssh://manage-svn-dc.drecom.jp/srv/svnrepos/drecom_ldap_login/trunk
+ssh -p 10022 -L 2345:manage-svn-dc.drecom.jp:10022 gateway.drecom.co.jp -l asami
+
+ssh -p 10022 -L 389:ldap.drecom.co.jp:389 gateway.drecom.co.jp -l asami
+
+alter table users drop column login;
+apt-get install libldap-dev
+
+drop database nivocy_production
+192.168.20.231
+
+<tr>
+	<td>
+		<div id="time_" class="time_field">
+	    <% for j in 0..23 %>
+        	<div class="time_cell"><%= j%>:00&nbsp;</div>
+        <% end %>
+		</div>
+	</td>
+	<% for i in 1..7 %>
+		<td>
+			<div id="time<%= i %>" onMouseDown="scheduler.startTimeField(<%= i %>);" onMouseMove="scheduler.overTimeField();" onMouseUp="scheduler.endTimeField();" class="time_field">
+        		<% for j in 0..47 %>
+        			<div id="cell<%= i %>_<%= j %>" class="cell"></div>
+        		<% end %>
+    			<div id="target<%= i %>" class="time_target" ></div>
+			</div>
+		</td>
+	<% end %>
+</tr>
+
+ALTER TABLE room_schedules CHANGE create_at created_at datetime;
+ALTER TABLE room_schedules CHANGE update_at updated_at datetime;
+
+<% require '/usr/local/site/navi/shared/system/config' %>
+
+window.onload = function() {
+	<% for user in @users %>
+		new Draggable("userBox<%= user.id %>",{revert:true});
+	<% end %>
+	
+	Droppables.add("userList", {
+		accept: "userBoxClass",
+		onDrop: function(element) {
+			$("userList").appendChild(element);
+			var uniquKey = element.id.replace("userBox", "");
+			Element.remove("selectUser" + uniquKey);
+		}
+	});
+	
+	Droppables.add("userSelectBox", {
+		accept: "userBoxClass",
+		onDrop: function(element) {
+			$("userSelectBox").appendChild(element);
+			var uniquKey = element.id.replace("userBox", "");
+			var addElement = document.createElement('input');
+			addElement.id = "selectUser" + uniquKey; 
+			addElement.name = "selectUser[]"; 
+			addElement.type = "hidden";
+			addElement.value = uniquKey;  
+			var addpoint = $('userSelectBox');
+			addpoint.appendChild(addElement);
+		}
+	});
+}
+
+<div id="userList">
+	<% for user in @users %>
+	<div id="userBox<%= user.id %>" class="userBoxClass">
+		<img src="https://intra.office.drecom.jp/<%= user.office_id %>/file/profile" width="50px" ><br>
+		<%= user.office_id %>
+	</div>
+	<% end %>
+</div>
+↓
+<div id="userSelectBox"></div>

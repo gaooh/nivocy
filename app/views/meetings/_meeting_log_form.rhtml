@@ -1,0 +1,23 @@
+<div id="meeting_log_form<%= meeting_log.id %>">
+<% form_remote_tag :url => { :action => 'ajax_update_meeting_log' }  do %>
+<table>
+	<tr>
+		<td rowspan="3">
+			<%= select_tag "meeting_log[type_id]", options_from_collection_for_select(@meeting_log_types, "id", "name", meeting_log.type_id)%>
+		</td>
+	</tr>
+	<tr>
+		<td>発言者</td>
+		<td><%= select_tag "meeting_log[voice_user_id]", options_from_collection_for_select(@users, "id", "name", meeting_log.voice_user_id)%></td>
+	</tr>
+	<tr>
+		<td>詳細</td>
+		<td><%= text_area 'meeting_log', 'voice', "cols" => 50, "rows" => 2  %></td>
+	</tr>
+</table>
+<%= hidden_field 'meeting_log', 'id', :value=> meeting_log.id %>
+<%= hidden_field 'meeting_log', 'meeting_id', :value=> meeting_agenda.meeting.id %>
+<%= hidden_field 'meeting_log', 'meeting_agenda_id', :value=> meeting_agenda.id %>
+<%= submit_tag '発言を記録' %>
+<% end %>
+</div>

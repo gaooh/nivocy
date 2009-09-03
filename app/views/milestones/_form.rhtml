@@ -1,0 +1,39 @@
+<script type="text/javascript">
+	var calendar;
+	
+	function initCalendar() { 
+		calendar = createJaCalendarObj("milestone_goal_calendar");
+		calendar.selectEvent.subscribe(caldendarSelect, calendar, true);
+		calendar.render();  
+		YAHOO.util.Event.addListener("milestone_goal_at_day", "focus", calendarFocus, calendar, true); 
+	}
+
+	function caldendarSelect(type, args, obj) {
+		var dates = args[0][0];  
+		var year = dates[0], month = dates[1], day = dates[2];
+		$('milestone_goal_at_day').value = year + '/' + month + "/" + day;
+		calendar.hide();
+	}
+
+	function calendarFocus(type, args, obj) {
+		calendar.show();
+	}
+</script>
+
+
+<div id="milestone_form">
+<p><label for="milestone_name">名称</label>
+<%= text_field 'milestone', 'name'  %></p>
+
+<p><label for="milestone_description">概要</label>
+<%= text_area 'milestone', 'description', :size => "50x5" %></p>
+
+<p><label for="milestone_goal_at">完了予定日</label>
+<%= text_field 'milestone_goal_at', 'day' , :size=>'10', :value=>format_day(@milestone.goal_at) %></p>
+<div id="milestone_goal_calendar"></div>
+
+</div>
+
+<script type="text/javascript">
+onloadFunctions.appendFunction(new OnloadFunction(initCalendar));
+</script>

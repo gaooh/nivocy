@@ -1,0 +1,28 @@
+<div id="no_side">
+	
+<h1 class="input">タスク一覧</h1>
+
+<table>
+  <tr>
+	<th width="80px">プロジェクト名</th>
+	<th width="80px">状態</th>
+	<%= sort_header_tag('title') %>
+	<th width="200px">締め切り</th>
+  </tr>
+  
+<% for task in @tasks %>
+  <tr>
+	<td><%=h task.project.name %></td>
+	<td><%=h task.status.name %></td>
+	<td><%= link_to task.title, :action => :show, :id => task %></td>
+	<td><%=h task.goal_at.strftime('%Y/%m/%d %H時') %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to "Prev", { :page => @task_pages.current.previous } if @task_pages.current.previous %>
+<%= paginate_number @task_pages.last, @task_pages.current.number %>
+<%= link_to "Next", { :page => @task_pages.current.next } if @task_pages.current.next %>
+
+<br />
+</div>

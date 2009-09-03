@@ -1,0 +1,31 @@
+
+<% for @meeting_agenda in @meeting_agendas %>
+<div class="task_right_contents">
+	<h3 class="agenda"> 
+		<%= in_place_editor_field :meeting_agenda, 'title', {}, { :save_text=>"保存", :cancel_text=>"取消", :on_complete=>"new Ajax.Request('/meetings/ajax_reset_meeting_agenda_title/#{@meeting.id}', {asynchronous:true, evalScripts:true});" } %></h3>
+	<table>
+		<tbody id="meeting_log_tbody<%= @meeting_agenda.id %>">
+			<% for meeting_log in @meeting_agenda.meeting_logs %>
+				<%= render :partial => "meeting_log_record", :locals => { :meeting_log => meeting_log } %>
+			<% end %>
+		</tbody>
+	</table>
+	
+	<hr class="middle">
+	
+	<% if @edit_user.input_oneliner? && !closed? %>
+		<% form_remote_tag :url => { :action => 'ajax_update_meeting_log_oneliner' }, 
+									:complete => "clear_log_oneliner(#{@meeting_agenda.id})"  do %>
+			<%= hidden_field 'meeting_log', 'meeting_id', :value=> @meeting.id %>
+			<%= hidden_field 'meeting_log', 'meeting_agenda_id', :value=> @meeting_agenda.id %>
+			<%= text_field_with_auto_complete :record, @meeting_agenda.id, {"size"=>80}, 
+									:url => {:action => "auto_complete_for_meeting_log_record", :id => @meeting.id },
+									:min_chars=>3, :skip_style => true%>
+		<% end %>
+		<div id="target_meeting_log_oneliner_message<%= @meeting_agenda.id %>"></div>
+	<% end %>
+	<% if @edit_user.input_standard? && !closed? %>
+		<%= render :partial => "meeting_log_form", :locals => { :meeting_log => MeetingLog.new, :meeting_agenda => @meeting_agenda } %>
+	<% end %>
+</div>
+<% end %>

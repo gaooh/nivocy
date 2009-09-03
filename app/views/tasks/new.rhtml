@@ -1,0 +1,19 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@task.project.name, :controller => :projects, :action => :show, :id => @task.project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	新規作成
+<% end %>
+
+<h1 class="input">タスクを追加する</h1>
+
+<div id="full">
+<% form_tag :action => 'create' do %>
+	<div class="input_contents">
+  		<%= render :partial => 'form' %>
+  	</div>
+	<%= button_image_submit_tag "create" %>
+<% end %>
+</div>
+
+

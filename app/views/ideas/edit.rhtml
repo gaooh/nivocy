@@ -1,0 +1,76 @@
+<script type="text/javascript">
+
+var handlePrevButtonState = function(type, args) {
+
+    var enabling = args[0];
+    var leftImage = args[1];
+    if(enabling) {
+        leftImage.src = "/images/contact.gif";    
+    } else {
+        leftImage.src = "/images/contact.gif";    
+    }
+    
+};
+
+var handleNextButtonState = function(type, args) {
+
+    var enabling = args[0];
+    var rightImage = args[1];
+    
+    if(enabling) {
+        rightImage.src = "/images/contact.gif";
+    } else {
+        rightImage.src = "/images/contact.gif";
+    }
+    
+};
+
+var carousel; // for ease of debugging; globals generally not a good idea
+
+var pageLoad = function() 
+{
+    carousel = new YAHOO.extension.Carousel("idea_carousel", 
+        {
+            numVisible:        5,
+            animationSpeed:    0.15,
+            scrollInc:         5,
+            navMargin:         20,
+            prevElement:     "prev-arrow",
+            nextElement:     "next-arrow",
+            size:              19,
+            prevButtonStateHandler:   handlePrevButtonState,
+            nextButtonStateHandler:   handleNextButtonState
+        }
+    );
+
+};
+
+YAHOO.util.Event.addListener(window, 'load', pageLoad);
+
+</script>
+
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to 'IDEA', :controller => :ideas %>
+<% end %>
+
+<% content_for(:breadcrumb_id) do %>
+	<%= link_to @idea.title, :controller => :ideas, :id => @idea.id %>
+<% end %>
+
+<div id="no_side">
+	
+<h1 class="input">アイデアを編集</h1>
+
+<%= render :partial => 'idea_attachments/file_upload_form' %>
+
+<% form_tag :action => 'update' do %>
+	
+	<div class="input_contents">
+	<%= render :partial => 'form' %>
+	</div>
+	
+	<%= button_image_submit_tag 'edit' %>
+	
+<% end %>
+
+</div>

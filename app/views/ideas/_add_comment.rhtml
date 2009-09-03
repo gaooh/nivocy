@@ -1,0 +1,8 @@
+<tr class="task_log_contents_log<%= "_even" if @index.even? %>">
+	<td width="100px">
+	<%= user_image(@comment.user) %><br/>
+	<%= @comment.created_at.strftime("%y/%m/%d %H:%M") %><br/>
+	#<%= @index+1%>
+</td>
+<td><%= @comment.comment %></td>
+</tr>

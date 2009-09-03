@@ -1,0 +1,1 @@
+page.visual_effect :fade, "meeting_log_record#{@metting_log_id}"

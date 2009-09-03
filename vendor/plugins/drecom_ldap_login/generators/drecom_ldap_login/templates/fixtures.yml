@@ -1,0 +1,6 @@
+arai:
+  id: 1
+  login: arai_motoki
+  name: ARAI Motoki
+  email: arai@drecom.co.jp
+  created_at: <%%= 5.days.ago.to_s :db %>

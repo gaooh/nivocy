@@ -1,0 +1,18 @@
+<% content_for(:breadcrumb_controller) do %>
+	<%= link_to(@milestone.project.name, :controller => :projects, :action => :show, :id => @milestone.project.id) %>
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%= link_to 'マイルストーン管理', :action => :list, :project_id => @milestone.project.id %>
+<% end %>
+<% content_for(:breadcrumb_id) do %>
+	編集
+<% end %>
+
+<h1 class="input">マイルストーン編集</h1>
+
+<% form_tag :action => 'update', :id => @milestone do %>
+  	<div class="input_contents">
+  		<%= render :partial => 'form' %>
+  	</div>
+	<%= button_image_submit_tag 'edit' %>
+<% end %>

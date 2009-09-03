@@ -1,0 +1,48 @@
+<% content_for(:breadcrumb_controller) do %>
+	スケジュール管理
+<% end %>
+<% content_for(:breadcrumb_action) do %>
+	<%=h @schedule.title %>
+<% end %>
+
+<h1 class="input">スケジュールを編集する</h1>
+
+<% form_tag :action => 'update' do %>
+	<%= hidden_field 'schedule', 'id' %>
+	<div class="input_contents">
+		<div id="schedule_form">
+		<div style="float: left;">
+		<p><label for="schedule_day">日時</label>
+			<%= text_field 'schedule_start_at', 'day' , :size=>'10', :value=>@schedule.start_at.strftime("%Y/%m/%d")%>
+			<%= select_hour_minute @schedule.start_at, :prefix => 'schedule_start_at', :field_name=>'time' %>
+			〜
+			<%= text_field 'schedule_end_at', 'day' , :size=>'10', :value=>@schedule.end_at.strftime("%Y/%m/%d")%>
+			<%= select_hour_minute @schedule.end_at, :prefix => 'schedule_end_at', :field_name=>'time' %>
+			<%= check_box("schedule", "day_long_flag") %>終日
+		</p>
+
+		<p><label for="schedule_title">タイトル</label>
+		<%= text_field 'schedule', 'title', :size => "35" %></p>
+
+		<p><label for="schedule_description">概要</label>
+		<%= text_area 'schedule', 'description', :size => "50x5" %></p>
+		</div>
+		
+		<div style="float: right;padding-right:20px">
+		<p><label for="schedule_entry_user"><%= icon_image_tag 'user_add'%> 参加者</label><br/>
+		<div id="target_select_entry_user_box" >
+			<%= render :partial => 'common/select_user_box' %>
+
+			<div id="pickup_schedule">
+				<%= text_field 'pickup', 'day' , :size=>'10', :value=>Time.now.strftime("%Y/%m/%d")%>に
+				<%= text_field 'pickup', 'time' , :size=>'3', :value => 60 %>分で
+				<a href="javascript:searchPickupSchedule()">確保可能なスケジュールを取得する</a>
+				<span id="target_pickup_shedules"></span>
+			</div>
+		</div>
+		</div>
+		<div class="clear"></div>
+		</div>
+  	</div>
+	<%= button_image_submit_tag "edit" %>
+<% end %>

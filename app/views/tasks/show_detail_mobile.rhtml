@@ -1,0 +1,16 @@
+■登録日<br>
+<%=h @task.created_at.strftime("%Y/%m/%d") %><br>
+■期限日<br>
+<%=h @task.goal_at.strftime("%Y/%m/%d") %><br>
+■状態<br>
+<%= @task.status.name %><br>
+■マイルストーン<br>
+<%= @task.milestone.name unless @task.milestone.nil? %><br>
+■作成者<br>
+<%= @task.create_user.name %><br>
+■担当者<br>
+<%= @task.treat_user.name %><br>
+<br>
+<%= link_to_mobile 1, "概要を見る", {:action => :show, :id => @task.id} %><br>
+<%= link_to_mobile 2, "タスクログを見る", {:action => :show_task_log, :id => @task.id} %><br>
+<%= link_to_mobile 3, "リストへ戻る", {:action => :list} %><br>
